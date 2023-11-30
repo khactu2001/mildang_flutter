@@ -3,89 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/api.dart';
 import 'package:flutter_mildang/widgets/custom_textfield.dart';
-import 'package:flutter_mildang/screens/edit_profile_screen.dart';
-import 'package:flutter_mildang/screens/home_screen.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/screens/login_screen.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-var kColorScheme = ColorScheme.fromSeed(
-  seedColor: const Color(0xFF248BB0),
-  error: const Color(0xFFE01839),
-);
-const Color textHeaderColor = Color(0xFF383B45);
-const Color textLabelColor = Color(0xFF090A0B);
-// const Color textErrorColor = Color(0xFFE01839);
-TextTheme textTheme = ThemeData().textTheme.copyWith(
-      titleLarge: const TextStyle(
-        color: textHeaderColor,
-        fontWeight: FontWeight.w700,
-        fontSize: 24,
-      ),
-      titleMedium: const TextStyle(
-        color: textLabelColor,
-        fontSize: 16,
-      ),
-    );
-
-void main() {
-  runApp(
-    MaterialApp.router(
-      theme: ThemeData().copyWith(
-          useMaterial3: true,
-          colorScheme: kColorScheme,
-          textTheme: textTheme,
-          inputDecorationTheme: const InputDecorationTheme().copyWith(
-            hintStyle: const TextStyle(
-              color: Color(0xffA3A5AE),
-            ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0xffE1E2E5),
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          )),
-      routerConfig: GoRouter(
-        initialLocation: '/',
-        routes: [
-          GoRoute(
-            name: 'home_screen',
-            path: '/',
-            builder: (context, state) => const HomeScreen(),
-          ),
-          GoRoute(
-            name: 'edit_profile_screen',
-            path: '/edit',
-            builder: (context, state) => EditProfileScreen(),
-          ),
-          GoRoute(
-            name: 'login_screen',
-            path: '/login',
-            builder: (context, state) => const LoginScreen(),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
-  State<MyApp> createState() {
-    return _MyApp();
+  State<LoginScreen> createState() {
+    return _LoginScreenState();
   }
 }
 
-class _MyApp extends State<MyApp> {
+class _LoginScreenState extends State<LoginScreen> {
   double defaultPadding = 20.0;
 
   bool isError = false;
@@ -301,22 +230,23 @@ class _MyApp extends State<MyApp> {
                   //   color: Color(0xff090A0B),
                   // ),
                   decoration: const InputDecoration(
-                      hintText: '휴대폰 번호로 입력해주세요.',
-                      hintStyle: TextStyle(
-                        color: Color(0xffA3A5AE),
+                    hintText: '휴대폰 번호로 입력해주세요.',
+                    hintStyle: TextStyle(
+                      color: Color(0xffA3A5AE),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xffE1E2E5),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xffE1E2E5),
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      )),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -452,16 +382,9 @@ class _MyApp extends State<MyApp> {
         ],
       ),
     );
-    if (isLoggedIn == true) {
-      loginScreen = HomeScreen(
-        user: user,
-        // onPressLogout: logout,
-      );
-    }
-    return MaterialApp(
-      home: Scaffold(
-        body: loginScreen,
-      ),
+
+    return Scaffold(
+      body: loginScreen,
     );
   }
 }
