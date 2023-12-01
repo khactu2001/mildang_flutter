@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/api.dart';
-import 'package:flutter_mildang/widgets/custom_textfield.dart';
+import 'package:flutter_mildang/main.dart';
+import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -54,6 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoggedIn = true;
       user = userLocal;
     });
+
+    if (mounted) {
+      context.go('/', extra: userString);
+    }
   }
 
   @override
@@ -146,6 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
         // errorMessage = 'call api failed';
       });
 
+      context.go('/', extra: jsonEncode(value.data.user));
+
       // Navigator.push(context, route)
     }).catchError((onError) {
       print('Data error: $onError');
@@ -231,21 +239,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   // ),
                   decoration: const InputDecoration(
                     hintText: '휴대폰 번호로 입력해주세요.',
-                    hintStyle: TextStyle(
-                      color: Color(0xffA3A5AE),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xffE1E2E5),
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
+                    // hintStyle: TextStyle(
+                    //   color: Color(0xffA3A5AE),
+                    // ),
+                    // enabledBorder: OutlineInputBorder(
+                    //   borderSide: BorderSide(
+                    //     color: Color(0xffE1E2E5),
+                    //   ),
+                    //   borderRadius: BorderRadius.all(Radius.circular(8)),
+                    // ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderSide: BorderSide(
+                    //     color: Colors.black,
+                    //   ),
+                    //   borderRadius: BorderRadius.all(Radius.circular(8)),
+                    // ),
                   ),
                 ),
               ),
@@ -387,26 +395,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: loginScreen,
     );
   }
-}
-
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-}
-
-bool validateEmail(String email) {
-  // Implement your validation logic here (e.g., check for a valid email format)
-  // Return true if email is valid, false otherwise
-  // Example validation logic:
-  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  return emailRegex.hasMatch(email);
 }
 
 class EmailInputColumn extends StatelessWidget {

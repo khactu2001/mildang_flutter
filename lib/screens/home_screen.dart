@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -9,6 +12,10 @@ class HomeScreen extends StatelessWidget {
   });
 
   final UserModel? user;
+
+  void logout(BuildContext context) {
+    context.go('/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class HomeScreen extends StatelessWidget {
             Column(
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('HOME SCREEN'),
+                const Text('HOME SCREEN'),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -54,19 +61,25 @@ class HomeScreen extends StatelessWidget {
             ),
             Row(
               children: [
-                // ElevatedButton(
-                //   onPressed: () {
-                //     context.canPop() ? context.pop() : () {};
-                //   },
-                //   child: const Text('go back'),
-                // ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove('user');
+                    await prefs.remove('token');
+                    // if(localContext != null){
+                    if (!context.mounted) return;
+                    logout(context);
+                    // };
+                  },
                   child: const Text('Log out'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context.pushNamed('edit_profile_screen');
+                    // context.pushNamed('edit_profile_screen');
+                    context.go(
+                      '/edit',
+                      extra: jsonEncode(user),
+                    );
                   },
                   child: const Text('Edit profile'),
                 )

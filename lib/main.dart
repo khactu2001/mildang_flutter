@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/api.dart';
-import 'package:flutter_mildang/widgets/custom_textfield.dart';
+import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/screens/edit_profile_screen.dart';
 import 'package:flutter_mildang/screens/home_screen.dart';
 import 'package:flutter_mildang/model/login_model.dart';
@@ -13,58 +13,132 @@ import 'package:shared_preferences/shared_preferences.dart';
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color(0xFF248BB0),
   error: const Color(0xFFE01839),
+  onSurface: const Color(0xFFC4C6CD),
 );
-const Color textHeaderColor = Color(0xFF383B45);
-const Color textLabelColor = Color(0xFF090A0B);
+Color textHeaderColor = HexColor('#383B45');
+Color textLabelColor = HexColor('#090A0B');
+Color textfieldDisabledBackgroundColor = HexColor('F1F2F3');
+Color textfieldDisabledTextColor = HexColor('626576');
+// const Color
 // const Color textErrorColor = Color(0xFFE01839);
 TextTheme textTheme = ThemeData().textTheme.copyWith(
-      titleLarge: const TextStyle(
-        color: textHeaderColor,
-        fontWeight: FontWeight.w700,
-        fontSize: 24,
-      ),
-      titleMedium: const TextStyle(
-        color: textLabelColor,
-        fontSize: 16,
-      ),
+    titleLarge: TextStyle(
+      color: textHeaderColor,
+      fontWeight: FontWeight.w700,
+      fontSize: 24,
+    ),
+    titleMedium: TextStyle(
+      color: textLabelColor,
+      fontSize: 16,
+    ),
+    bodyMedium: TextStyle(
+      color: textfieldDisabledTextColor,
+      fontSize: 24,
+    ),
+    bodySmall: const TextStyle(
+      color: Color(0xFF090A0B),
+      fontSize: 18,
+      fontWeight: FontWeight.w400,
+    )
+    // disabledTextfieldColor: const TextStyle(
+    //   color: textfieldDisabledTextColor,
+
+    // ),
     );
 
 void main() {
   runApp(
     MaterialApp.router(
       theme: ThemeData().copyWith(
-          useMaterial3: true,
-          colorScheme: kColorScheme,
-          textTheme: textTheme,
-          inputDecorationTheme: const InputDecorationTheme().copyWith(
-            hintStyle: const TextStyle(
-              color: Color(0xffA3A5AE),
+        useMaterial3: true,
+        colorScheme: kColorScheme,
+        textTheme: textTheme,
+        buttonTheme: const ButtonThemeData(
+            // shape: RoundedRectangleBorder(
+            //   borderRadius: BorderRadius.all(Radius.circular(8)),
+            // ),
             ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0xffE1E2E5),
-              ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: kColorScheme.primary,
+            foregroundColor: kColorScheme.onPrimary,
+            //background color when button is disabled
+            disabledBackgroundColor: kColorScheme.onSurface,
+            //text when button is disabled
+            disabledForegroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        // button
+        inputDecorationTheme: const InputDecorationTheme().copyWith(
+          hintStyle: const TextStyle(
+            color: Color(0xffA3A5AE),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0xffE1E2E5),
             ),
-          )),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          disabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 0,
+              color: Colors.transparent,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          fillColor: textfieldDisabledBackgroundColor,
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+        ),
+      ),
       routerConfig: GoRouter(
-        initialLocation: '/',
+        initialLocation: '/login',
         routes: [
           GoRoute(
             name: 'home_screen',
             path: '/',
-            builder: (context, state) => const HomeScreen(),
+            builder: (context, state) {
+              final userString = state.extra as String?;
+              Map<String, dynamic> object =
+                  userString != null ? jsonDecode(userString) : null;
+              UserModel? user = UserModel.fromJson(object);
+              return HomeScreen(
+                user: user,
+              );
+            },
           ),
           GoRoute(
             name: 'edit_profile_screen',
             path: '/edit',
-            builder: (context, state) => EditProfileScreen(),
+            builder: (context, state) {
+              print("${state.extra}");
+              final userString = state.extra as String?;
+              Map<String, dynamic> object =
+                  userString != null ? jsonDecode(userString) : null;
+              UserModel? user = UserModel.fromJson(object);
+              return EditProfileScreen(
+                user: user,
+              );
+            },
           ),
           GoRoute(
             name: 'login_screen',

@@ -1,3 +1,7 @@
+import 'package:intl/intl.dart';
+
+final formatter = DateFormat.yMd();
+
 class UserModel {
   const UserModel({
     required this.id,
@@ -9,6 +13,7 @@ class UserModel {
     required this.accType,
     required this.role,
     required this.gender,
+    this.birthday,
   });
 
   final int id;
@@ -17,6 +22,7 @@ class UserModel {
   final String? name;
   final String email;
   final String? snsId;
+  final String? birthday;
   final String accType;
   final String role;
   final int gender;
@@ -33,6 +39,7 @@ class UserModel {
         'accType': String accType,
         'role': String role,
         'gender': int gender,
+        'birthday': String? birthday,
       } =>
         UserModel(
           id: id,
@@ -44,6 +51,7 @@ class UserModel {
           accType: accType,
           role: role,
           gender: gender,
+          birthday: birthday,
         ),
       _ => throw const FormatException('Failed to load user.'),
     };
@@ -59,8 +67,16 @@ class UserModel {
       'accType': accType,
       'role': role,
       'gender': gender,
+      'birthday': birthday,
     };
   }
+
+  // String get formatDatetime {
+  //   if (birthday == null) {
+  //     return DateTime.now().toString();
+  //   }
+  //   return formatter.format(birthday!);
+  // }
 }
 
 class TokenModel {
