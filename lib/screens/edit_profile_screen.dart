@@ -1,12 +1,16 @@
+// import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/apis/api.dart';
 import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/widgets/textfields/common_textfield.dart';
+import 'package:flutter_mildang/widgets/textfields/common_textfield_stateful.dart';
 import 'package:flutter_mildang/widgets/textfields/dob_textfield.dart';
-import 'package:flutter_mildang/widgets/textfields/tf_username.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final formatter = DateFormat.yMd();
 
 class RowTitleRequiredField extends StatelessWidget {
   const RowTitleRequiredField({super.key, required this.title, this.required});
@@ -57,41 +61,59 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final phoneController = TextEditingController();
-  // final dobController = TextEditingController();
+  final dobController = TextEditingController();
   final genderController = TextEditingController();
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  void _submitProfile() {
-    if (_formKey.currentState!.validate()) {}
+  void _submitProfile() async {
+    if (_formKey.currentState!.validate()) {
+      await updateProfile({
+        'nickname': usernameController.text,
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('submit')));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('invalid')));
+    }
   }
 
   final String? dobParam = '29387';
 
-  @override
-  void initState() {
-    super.initState();
+  String get formatDOB {
     DateTime dob = widget.user.birthday == null
         ? DateTime.now()
         : DateTime.parse(widget.user.birthday!);
     String dobString = DateFormat('ddMMyy').format(dob);
-    print('birthday: $dobString');
+    return dobString;
+  }
 
-    setState(() {
-      // dobParam = dobString;
-    });
+  @override
+  void initState() {
+    super.initState();
 
-    emailController.text = widget.user.email;
     phoneController.text = widget.user.phone;
     genderController.text = widget.user.gender.toString();
+    usernameController.text = widget.user.nickname ?? '';
+    emailController.text = widget.user.email;
+
+    if (widget.user.birthday != null) {
+      dobController.text =
+          formatter.format(DateTime.parse(widget.user.birthday!));
+    }
   }
 
   @override
   void dispose() {
     phoneController.dispose();
-    // dobController.dispose();
+    dobController.dispose();
     genderController.dispose();
+    usernameController.dispose();
     emailController.dispose();
     super.dispose();
   }
@@ -113,7 +135,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         leading: IconButton(
           color: Colors.black,
           icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () {},
+          onPressed: () {
+            // Navigator.pop(context);
+            // context.go('/', extra: jsonEncode(widget.user));
+            context.pop();
+          },
         ),
         forceMaterialTransparency: true,
         actions: [
@@ -143,12 +169,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Expanded(
                         child: SizedBox(
                           height: 56,
-                          child: CommonTextfield(
+                          child: CommonTextfieldStateful(
                             textEditingController: phoneController,
                             disabled: true,
-                            decoration:
-                                const InputDecoration(hintText: 'jasflk'),
-                            // obscureText: true,
+                            decoration: const InputDecoration(
+                              filled: true,
+                            ),
                           ),
                         ),
                       ),
@@ -170,11 +196,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     title: '생년월일/ 성별',
                     required: true,
                   ),
-                  const TextFieldDOB(
-                    // textEditingController: dobController,
-                    // genderController: genderController,
+                  TextFieldDOB(
+                    dob: formatDOB,
                     disabled: true,
-                    // dob: dobParam,
+                    placeholder: '8734',
+                    gender: widget.user.gender,
                   ),
                   // ---------------username-----------------
                   const RowTitleRequiredField(
@@ -184,8 +210,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextfieldUsername(
-                          textEditingController: phoneController,
+                        child: CommonTextfieldStateful(
+                          textEditingController: usernameController,
+                          placeholderText: 'Enter username...',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter username';
+                            }
+                            return null;
+                          },
+                          maxLength: 10,
+                          onChanged: (value) {
+                            setState(() {
+                              usernameController.text = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                              suffix:
+                                  Text('${usernameController.text.length}/10')),
                         ),
                       ),
                     ],
@@ -197,7 +239,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: CommonTextfield(
+                        child: CommonTextfieldStateful(
                           textEditingController: emailController,
                           decoration: const InputDecoration(),
                           validator: (value) {

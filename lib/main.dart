@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mildang/api.dart';
+import 'package:flutter_mildang/apis/api.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/screens/edit_profile_screen.dart';
 import 'package:flutter_mildang/screens/home_screen.dart';
@@ -58,6 +58,13 @@ void main() {
             //   borderRadius: BorderRadius.all(Radius.circular(8)),
             // ),
             ),
+        // textButtonTheme: TextButtonThemeData(
+        //   style: ElevatedButton.styleFrom(
+        //     textStyle: const TextStyle(
+        //       fontSize: 20,
+        //     ),
+        //   ),
+        // ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: kColorScheme.primary,
@@ -69,6 +76,11 @@ void main() {
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
+            textStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+            fixedSize: const Size(double.infinity, 56),
           ),
         ),
         // button
@@ -130,7 +142,6 @@ void main() {
             name: 'edit_profile_screen',
             path: '/edit',
             builder: (context, state) {
-              print("${state.extra}");
               final userString = state.extra as String?;
               Map<String, dynamic> object =
                   userString != null ? jsonDecode(userString) : null;

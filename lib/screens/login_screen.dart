@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mildang/api.dart';
+import 'package:flutter_mildang/apis/api.dart';
 import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
@@ -23,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String errorMessage = "";
   bool isShowPassword = false;
 
-  final phoneController = TextEditingController();
-  final passwordController = TextEditingController();
+  final phoneController = TextEditingController(text: '08411223344');
+  final passwordController = TextEditingController(text: '11223344');
 
   bool isLoggedIn = false;
   UserModel? user;
@@ -47,18 +47,24 @@ class _LoginScreenState extends State<LoginScreen> {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
     final String? userString = prefs.getString('user');
+    print('$userString $token');
     if (userString == null || token == null) {
       return;
     }
-    final Map<String, dynamic> userCheck = jsonDecode(userString);
-    UserModel userLocal = UserModel.fromJson(userCheck);
-    setState(() {
-      isLoggedIn = true;
-      user = userLocal;
-    });
+    try {
+      final Map<String, dynamic> userCheck = jsonDecode(userString);
+      UserModel userLocal = UserModel.fromJson(userCheck);
+      setState(() {
+        isLoggedIn = true;
+        user = userLocal;
+      });
 
-    if (mounted) {
-      context.go('/', extra: userString);
+      if (mounted) {
+        context.go('/', extra: userString);
+      }
+    } catch (e) {
+      await prefs.remove('token');
+      await prefs.remove('user');
     }
   }
 

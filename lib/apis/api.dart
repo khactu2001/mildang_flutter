@@ -5,6 +5,18 @@ import 'dart:convert';
 
 const String baseUrl = 'https://api-mildang.brickmate.kr/api/v1';
 const String path = '/authentication/login';
+// class DataClass<T> {
+//   Map<String, dynamic> toJson() {
+//     // return {
+//     //   'refreshToken': refreshToken,
+//     //   'accessToken': accessToken,
+//     // };
+//   }
+// }
+
+// String stringifyClass<T>(T model) {
+//   return jsonEncode(model?.toJson?.());
+// }
 
 Future<LoginResponseModel> login(Map<String, dynamic> dataBody) async {
   var url = Uri.parse(baseUrl + path);
@@ -40,5 +52,40 @@ Future<LoginResponseModel> login(Map<String, dynamic> dataBody) async {
     }
   } catch (e) {
     throw Exception('Error login: $e');
+  }
+}
+
+const String userPath = '/user/update-profile';
+
+Future<String?> getHeader() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String? token = prefs.getString('token');
+  final String? userString = prefs.getString('user');
+  if (userString == null || token == null) {
+    return null;
+  }
+  final Map<String, dynamic> tokenCheck = jsonDecode(token);
+  TokenModel tokenLocal = TokenModel.fromJson(tokenCheck);
+  return tokenLocal.accessToken;
+}
+
+Future<void> updateProfile(Map<String, dynamic> dataBody) async {
+  var url = Uri.parse(baseUrl + userPath);
+  try {
+    // prepare header
+    final String? header = await getHeader();
+    print('header: $header');
+
+    // call api
+    var response = await http.put(url, body: dataBody, headers: {
+      'Authorization': header != null ? 'Bearer $header' : '',
+    });
+    final decodedJson = jsonDecode(response.body);
+    print(decodedJson['message']);
+    // LoginResponseModel loginResponseModel =
+    //     LoginResponseModel.fromJson(decodedJson);
+    // print(loginResponseModel.message);
+  } catch (e) {
+    throw Exception('Error update profile: $e');
   }
 }

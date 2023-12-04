@@ -46,8 +46,8 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Username: '),
-                    Text(user?.username?.toString() ?? '-'),
+                    const Text('Nickname: '),
+                    Text(user?.nickname?.toString() ?? '-'),
                   ],
                 ),
                 Row(
@@ -55,6 +55,13 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     const Text('Email: '),
                     Text(user?.email.toString() ?? '-'),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Birthday: '),
+                    Text(user?.birthday.toString() ?? '-'),
                   ],
                 ),
               ],
@@ -76,10 +83,15 @@ class HomeScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // context.pushNamed('edit_profile_screen');
-                    context.go(
+                    context.push(
                       '/edit',
                       extra: jsonEncode(user),
                     );
+                    // context.go(
+                    //   '/edit',
+                    //   extra: jsonEncode(user),
+                    // );
+                    // Navigator.push(context)
                   },
                   child: const Text('Edit profile'),
                 )

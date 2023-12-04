@@ -4,40 +4,44 @@ import 'package:flutter_mildang/main.dart';
 class TextFieldDOB extends StatefulWidget {
   const TextFieldDOB({
     super.key,
-    // required this.textEditingController,
-    // required this.genderController,
+    // required this.dobController,
     this.dob,
     this.placeholder,
     this.disabled,
+    this.gender,
   });
 
   final String? placeholder;
   final String? dob;
   final bool? disabled;
+  final int? gender;
+  // final TextEditingController dobController;
 
   @override
   State<TextFieldDOB> createState() => _TextFieldDOBState();
 }
 
 class _TextFieldDOBState extends State<TextFieldDOB> {
-  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   late FocusNode phoneFocusNode;
   late FocusNode genderFocusNode;
   @override
   void initState() {
     super.initState();
-    phoneController.addListener(_printLatestValue);
+    dobController.addListener(_printLatestValue);
     genderController.addListener(_printGenderValue);
 
     phoneFocusNode = FocusNode();
     genderFocusNode = FocusNode();
-    phoneController.text = widget.dob ?? '';
+    dobController.text = widget.dob ?? '';
+    genderController.text =
+        widget.gender != null ? widget.gender.toString() : '';
   }
 
   @override
   void dispose() {
-    phoneController.dispose();
+    dobController.dispose();
     genderController.dispose();
 
     phoneFocusNode.dispose();
@@ -46,7 +50,7 @@ class _TextFieldDOBState extends State<TextFieldDOB> {
   }
 
   void _printLatestValue() {
-    final text = phoneController.text;
+    final text = dobController.text;
     print('Second text field: $text (${text.characters.length})');
     // if (text.characters.length > 5) {
     //   // genderController
@@ -59,20 +63,6 @@ class _TextFieldDOBState extends State<TextFieldDOB> {
     print('Second text field: $text (${text.characters.length})');
   }
 
-  // const _TextFieldDOBState(
-  //     {super.key,
-  //     required this.textEditingController,
-  //     required this.genderController,
-  //     this.placeholder,
-  //     this.disabled});
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   // Start listening to changes.
-  //   myController.addListener(_printLatestValue);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -82,8 +72,8 @@ class _TextFieldDOBState extends State<TextFieldDOB> {
             width: 135,
             height: 56,
             child: TextFormField(
-              textAlignVertical: TextAlignVertical.top,
-              controller: phoneController,
+              textAlignVertical: TextAlignVertical.bottom,
+              controller: dobController,
               focusNode: phoneFocusNode,
               onChanged: (value) {
                 if (value.trim().length > 5) {
@@ -96,8 +86,8 @@ class _TextFieldDOBState extends State<TextFieldDOB> {
               },
               decoration: InputDecoration(
                 hintText: widget.placeholder,
-                filled: widget.disabled == true,
                 counterText: '',
+                filled: widget.disabled,
               ),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     letterSpacing: 2,
@@ -114,7 +104,7 @@ class _TextFieldDOBState extends State<TextFieldDOB> {
           height: 56,
           child: Center(
             child: TextFormField(
-              textAlignVertical: TextAlignVertical.top,
+              textAlignVertical: TextAlignVertical.bottom,
               enabled: widget.disabled == true ? false : true,
               controller: genderController,
               focusNode: genderFocusNode,

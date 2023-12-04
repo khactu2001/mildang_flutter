@@ -1,3 +1,5 @@
+// import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 final formatter = DateFormat.yMd();
@@ -5,7 +7,7 @@ final formatter = DateFormat.yMd();
 class UserModel {
   const UserModel({
     required this.id,
-    this.username,
+    this.nickname,
     required this.phone,
     this.name,
     required this.email,
@@ -17,7 +19,7 @@ class UserModel {
   });
 
   final int id;
-  final String? username;
+  final String? nickname;
   final String phone;
   final String? name;
   final String email;
@@ -31,7 +33,7 @@ class UserModel {
     return switch (json) {
       {
         'id': int id,
-        'username': String? username,
+        'nickname': String? nickname,
         'phone': String phone,
         'name': String? name,
         'email': String email,
@@ -43,7 +45,7 @@ class UserModel {
       } =>
         UserModel(
           id: id,
-          username: username,
+          nickname: nickname,
           phone: phone,
           name: name,
           email: email,
@@ -59,7 +61,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': username,
+      'nickname': nickname,
       'phone': phone,
       'name': name,
       'email': email,
@@ -136,4 +138,18 @@ class LoginResponseModel {
       data: LoginResponseDataModel.fromJson(json['data']),
     );
   }
+}
+
+class UpdateProfileBodyModel {
+  UpdateProfileBodyModel({
+    this.nickname,
+  });
+
+  final String? nickname;
+
+  // String toString(Map<String, dynamic> json){
+  //   return jsonEncode({
+  //     'nickname': json['nickname'],
+  //   })
+  // }
 }
