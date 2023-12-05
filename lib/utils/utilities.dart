@@ -1,4 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+enum LocalKeyCustom {
+  user,
+  token,
+}
 
 void printObject(Object object) {
   // Map<String, dynamic> personMap = object.toMap();
@@ -25,4 +34,33 @@ class HexColor extends Color {
   }
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+}
+
+Future<Map<String, dynamic>?> getLocalVariable(LocalKeyCustom key) async {
+  print('key: $key');
+  final prefs = await SharedPreferences.getInstance();
+  String? localString = prefs.getString(key.toString());
+  if (localString == null) return null;
+
+  return jsonDecode(localString);
+}
+
+Future<bool> setLocalVariable(LocalKeyCustom key, String value) async {
+  final prefs = await SharedPreferences.getInstance();
+  bool? isSet = await prefs.setString(key.toString(), value);
+  return isSet;
+}
+
+String convertStringToFormattedDateTime(String utcString,
+    {String format = 'ddMMyy'}) {
+  if (utcString.isEmpty) return '';
+  DateTime datetime = DateTime.parse(utcString);
+  String datetimeString = DateFormat(format).format(datetime);
+  return datetimeString;
+}
+
+Future<bool> removeLocalVariable(LocalKeyCustom key) async {
+  final prefs = await SharedPreferences.getInstance();
+  bool? isRemoved = await prefs.remove(key.toString());
+  return isRemoved;
 }

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 
 class UserModel {
-  const UserModel({
+  UserModel({
     required this.id,
     this.nickname,
     required this.phone,
@@ -19,12 +19,12 @@ class UserModel {
   });
 
   final int id;
-  final String? nickname;
-  final String phone;
-  final String? name;
-  final String email;
+  String? nickname;
+  String phone;
+  String? name;
+  String email;
   final String? snsId;
-  final String? birthday;
+  String? birthday;
   final String accType;
   final String role;
   final int gender;
@@ -79,6 +79,21 @@ class UserModel {
   //   }
   //   return formatter.format(birthday!);
   // }
+
+  copyClass<UserModel>() {
+    return {
+      'id': id,
+      'nickname': nickname,
+      'phone': phone,
+      'name': name,
+      'email': email,
+      'snsId': snsId,
+      'accType': accType,
+      'role': role,
+      'gender': gender,
+      'birthday': birthday,
+    };
+  }
 }
 
 class TokenModel {

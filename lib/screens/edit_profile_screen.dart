@@ -1,14 +1,18 @@
 // import 'dart:convert';
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
-import 'package:flutter_mildang/main.dart';
+// import 'package:flutter_mildang/main.dart';
+import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/common_textfield_stateful.dart';
 import 'package:flutter_mildang/widgets/textfields/dob_textfield.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -72,8 +76,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (_formKey.currentState!.validate()) {
       await updateProfile({
         'nickname': usernameController.text,
+        'email': emailController.text,
       });
+
+      widget.user.nickname = usernameController.text;
+      widget.user.email = emailController.text;
+      await setLocalVariable(LocalKeyCustom.user, jsonEncode(widget.user));
+
       if (mounted) {
+        // standalone call function without needing data
+        Provider.of<ChangeNotifierModel>(context, listen: false)
+            .updateUserProvider(widget.user);
+
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('submit')));
       }
@@ -82,8 +96,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           .showSnackBar(const SnackBar(content: Text('invalid')));
     }
   }
-
-  final String? dobParam = '29387';
 
   String get formatDOB {
     DateTime dob = widget.user.birthday == null
@@ -94,12 +106,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void initState() {
     super.initState();
 
     phoneController.text = widget.user.phone;
     genderController.text = widget.user.gender.toString();
     usernameController.text = widget.user.nickname ?? '';
+    // usernameController.text =
+    //     Provider.of<ChangeNotifierModel>(context).userProvider?.nickname ?? '';
     emailController.text = widget.user.email;
 
     if (widget.user.birthday != null) {
@@ -119,9 +138,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void logout(BuildContext ctx) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user');
-    await prefs.remove('token');
+    await removeLocalVariable(LocalKeyCustom.token);
+    await removeLocalVariable(LocalKeyCustom.user);
     if (!mounted) return;
     ctx.go('/login');
   }
@@ -258,13 +276,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.canPop() ? context.pop() : () {};
-                    },
-                    child: const Text('go back'),
-                  ),
                   ElevatedButton(
                     onPressed: () {
                       logout(context);
@@ -272,14 +285,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     },
                     child: const Text('Log out'),
                   ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.pushNamed(context, '/edit');
-                  //   },
-                  //   child: const Text('Edit profile'),
-                  // )
                 ],
-              )
+              ),
             ],
           ),
         ),

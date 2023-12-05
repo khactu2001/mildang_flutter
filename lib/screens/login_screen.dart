@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
-import 'package:flutter_mildang/main.dart';
+// import 'package:flutter_mildang/main.dart';
+import 'package:flutter_mildang/model/change_notifier_model.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,15 +47,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loadUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
-    final String? userString = prefs.getString('user');
-    print('$userString $token');
-    if (userString == null || token == null) {
+    final Map<String, dynamic>? token =
+        await getLocalVariable(LocalKeyCustom.token);
+    final Map<String, dynamic>? userCheck =
+        await getLocalVariable(LocalKeyCustom.user);
+    print('user loaded from local: $userCheck');
+    if (userCheck == null || token == null) {
       return;
     }
     try {
-      final Map<String, dynamic> userCheck = jsonDecode(userString);
       UserModel userLocal = UserModel.fromJson(userCheck);
       setState(() {
         isLoggedIn = true;
@@ -60,11 +63,13 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       if (mounted) {
-        context.go('/', extra: userString);
+        Provider.of<ChangeNotifierModel>(context, listen: false)
+            .updateUserProvider(userLocal);
+        context.go('/');
       }
     } catch (e) {
-      await prefs.remove('token');
-      await prefs.remove('user');
+      await removeLocalVariable(LocalKeyCustom.user);
+      await removeLocalVariable(LocalKeyCustom.token);
     }
   }
 
@@ -157,6 +162,9 @@ class _LoginScreenState extends State<LoginScreen> {
         user = value.data.user;
         // errorMessage = 'call api failed';
       });
+
+      Provider.of<ChangeNotifierModel>(context, listen: false)
+          .updateUserProvider(value.data.user);
 
       context.go('/', extra: jsonEncode(value.data.user));
 
@@ -370,29 +378,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 : null,
           ),
           Container(
-            width: double.infinity,
-            height: 56,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            margin: const EdgeInsets.only(top: 48),
-            child: ElevatedButton(
-              onPressed: onSubmitLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff248BB0),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
+              width: double.infinity,
+              height: 56,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
-              child: const Text(
-                '로그인',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
+              margin: const EdgeInsets.only(top: 48),
+              child: Consumer<ChangeNotifierModel>(
+                builder: (context, model, child) => ElevatedButton(
+                  onPressed: onSubmitLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff248BB0),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )
+              ))
         ],
       ),
     );
