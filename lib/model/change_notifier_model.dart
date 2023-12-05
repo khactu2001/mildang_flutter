@@ -13,4 +13,8 @@ class ChangeNotifierModel extends ChangeNotifier {
     userProvider = null;
     notifyListeners();
   }
+
+  UserModel? getUserProvider() {
+    return userProvider;
+  }
 }

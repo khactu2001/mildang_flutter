@@ -67,6 +67,7 @@ class _CommonTextfieldStateful extends State<CommonTextfieldStateful> {
       obscureText: widget.obscureText ?? false,
       onChanged: widget.onChanged,
       maxLength: widget.maxLength,
+      // textInputAction: TextInputAction.next,
     );
   }
 }

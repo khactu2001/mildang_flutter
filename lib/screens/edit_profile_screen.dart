@@ -74,10 +74,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _submitProfile() async {
     if (_formKey.currentState!.validate()) {
-      await updateProfile({
-        'nickname': usernameController.text,
-        'email': emailController.text,
-      });
+      // await updateProfile({
+      //   'nickname': usernameController.text,
+      //   'email': emailController.text,
+      // });
 
       widget.user.nickname = usernameController.text;
       widget.user.email = emailController.text;
@@ -88,12 +88,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Provider.of<ChangeNotifierModel>(context, listen: false)
             .updateUserProvider(widget.user);
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('submit')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text('submit'),
+          ),
+        );
       }
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('invalid')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 1),
+          content: Text('invalid'),
+        ),
+      );
     }
   }
 
@@ -106,24 +114,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     super.initState();
+    _initValueAfterMounted();
+  }
 
-    phoneController.text = widget.user.phone;
-    genderController.text = widget.user.gender.toString();
-    usernameController.text = widget.user.nickname ?? '';
-    // usernameController.text =
-    //     Provider.of<ChangeNotifierModel>(context).userProvider?.nickname ?? '';
-    emailController.text = widget.user.email;
+  void _initValueAfterMounted() {
+    if (mounted) {
+      final userProvider =
+          Provider.of<ChangeNotifierModel>(context, listen: false).userProvider;
 
-    if (widget.user.birthday != null) {
-      dobController.text =
-          formatter.format(DateTime.parse(widget.user.birthday!));
+      usernameController.text = userProvider?.nickname ?? '';
+      emailController.text = userProvider?.email ?? '';
+
+      phoneController.text = userProvider?.phone ?? '';
+      genderController.text = userProvider?.gender.toString() ?? '';
+
+      if (widget.user.birthday != null) {
+        dobController.text =
+            formatter.format(DateTime.parse(widget.user.birthday!));
+      }
     }
   }
 
@@ -150,12 +160,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text('마이페이지 수정'),
         titleTextStyle: Theme.of(context).textTheme.titleLarge,
+        centerTitle: true,
         leading: IconButton(
           color: Colors.black,
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () {
-            // Navigator.pop(context);
-            // context.go('/', extra: jsonEncode(widget.user));
             context.pop();
           },
         ),
@@ -167,128 +176,132 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // ---------------phone--------------
-                  const RowTitleRequiredField(
-                    title: '휴대폰 번호',
-                    required: true,
-                  ),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 56,
-                          child: CommonTextfieldStateful(
-                            textEditingController: phoneController,
-                            disabled: true,
-                            decoration: const InputDecoration(
-                              filled: true,
+                      // ---------------phone--------------
+                      const RowTitleRequiredField(
+                        title: '휴대폰 번호',
+                        required: true,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 56,
+                              child: CommonTextfieldStateful(
+                                textEditingController: phoneController,
+                                disabled: true,
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const SizedBox(
+                            height: 56,
+                            width: 108,
+                            child: ElevatedButton(
+                              onPressed: null,
+                              child: Text('인증'),
+                            ),
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        width: 8,
+                      // ------------dob----------------
+                      const RowTitleRequiredField(
+                        title: '생년월일/ 성별',
+                        required: true,
                       ),
-                      const SizedBox(
-                        height: 56,
-                        width: 108,
-                        child: ElevatedButton(
-                          onPressed: null,
-                          child: Text('인증'),
-                        ),
-                      )
+                      TextFieldDOB(
+                        dob: convertStringToFormattedDateTime(
+                            Provider.of<ChangeNotifierModel>(context,
+                                        listen: false)
+                                    .userProvider
+                                    ?.birthday ??
+                                ""),
+                        disabled: true,
+                        gender: int.tryParse(genderController.text),
+                      ),
+                      // ---------------username-----------------
+                      const RowTitleRequiredField(
+                        title: '닉네임',
+                        required: true,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CommonTextfieldStateful(
+                              textEditingController: usernameController,
+                              placeholderText: 'Enter username...',
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter username';
+                                }
+                                return null;
+                              },
+                              maxLength: 10,
+                              decoration: InputDecoration(
+                                  suffix: Text(
+                                      '${usernameController.text.length}/10')),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // // -------------------email---------------------
+                      const RowTitleRequiredField(
+                        title: '이메일',
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CommonTextfieldStateful(
+                              textEditingController: emailController,
+                              decoration: const InputDecoration(),
+                              validator: (value) {
+                                if (value != null && value.isNotEmpty) {
+                                  // start checking
+                                  return validateEmail(value)
+                                      ? null
+                                      : 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  // ------------dob----------------
-                  const RowTitleRequiredField(
-                    title: '생년월일/ 성별',
-                    required: true,
-                  ),
-                  TextFieldDOB(
-                    dob: formatDOB,
-                    disabled: true,
-                    placeholder: '8734',
-                    gender: widget.user.gender,
-                  ),
-                  // ---------------username-----------------
-                  const RowTitleRequiredField(
-                    title: '닉네임',
-                    required: true,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CommonTextfieldStateful(
-                          textEditingController: usernameController,
-                          placeholderText: 'Enter username...',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter username';
-                            }
-                            return null;
-                          },
-                          maxLength: 10,
-                          onChanged: (value) {
-                            setState(() {
-                              usernameController.text = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                              suffix:
-                                  Text('${usernameController.text.length}/10')),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // // -------------------email---------------------
-                  const RowTitleRequiredField(
-                    title: '이메일',
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CommonTextfieldStateful(
-                          textEditingController: emailController,
-                          decoration: const InputDecoration(),
-                          validator: (value) {
-                            if (value != null && value.isNotEmpty) {
-                              // start checking
-                              return validateEmail(value)
-                                  ? null
-                                  : 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     ElevatedButton(
+                  //       onPressed: () {
+                  //         logout(context);
+                  //         // context.go(location)
+                  //       },
+                  //       child: const Text('Log out'),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      logout(context);
-                      // context.go(location)
-                    },
-                    child: const Text('Log out'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

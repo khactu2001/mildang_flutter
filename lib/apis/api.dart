@@ -1,23 +1,10 @@
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 const String baseUrl = 'https://api-mildang.brickmate.kr/api/v1';
 const String path = '/authentication/login';
-// class DataClass<T> {
-//   Map<String, dynamic> toJson() {
-//     // return {
-//     //   'refreshToken': refreshToken,
-//     //   'accessToken': accessToken,
-//     // };
-//   }
-// }
-
-// String stringifyClass<T>(T model) {
-//   return jsonEncode(model?.toJson?.());
-// }
 
 Future<LoginResponseModel> login(Map<String, dynamic> dataBody) async {
   var url = Uri.parse(baseUrl + path);
@@ -67,14 +54,10 @@ Future<void> updateProfile(Map<String, dynamic> dataBody) async {
     print('header: $header');
 
     // call api
-    var response = await http.put(url, body: dataBody, headers: {
+    await http.put(url, body: dataBody, headers: {
       'Authorization': header != null ? 'Bearer $header' : '',
     });
-    final decodedJson = jsonDecode(response.body);
-    print(decodedJson['message']);
-    // LoginResponseModel loginResponseModel =
-    //     LoginResponseModel.fromJson(decodedJson);
-    // print(loginResponseModel.message);
+    // final decodedJson = jsonDecode(response.body);
   } catch (e) {
     throw Exception('Error update profile: $e');
   }

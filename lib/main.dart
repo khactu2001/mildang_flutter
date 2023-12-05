@@ -134,10 +134,6 @@ void main() {
               name: 'home_screen',
               path: '/',
               builder: (context, state) {
-                // final userString = state.extra as String?;
-                // Map<String, dynamic> object =
-                //     userString != null ? jsonDecode(userString) : null;
-                // UserModel? user = UserModel.fromJson(object);
                 return const HomeScreen();
               },
             ),

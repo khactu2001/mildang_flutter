@@ -32,47 +32,54 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    if (child != null) child,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Id: '),
-                        Text(userProvider?.id.toString() ?? '-'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Phone: '),
-                        Text(userProvider?.phone ?? '-'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Birthday: '),
-                        Text(userProvider?.birthday != null
-                            ? convertStringToFormattedDateTime(
-                                userProvider!.birthday.toString(),
-                                format: 'dd-MM-yyyy',
-                              )
-                            : ''),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Nickname: '),
-                        Text(userProvider?.nickname ?? '-'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Email: '),
-                        Text(userProvider?.email ?? '-'),
-                      ],
-                    ),
+                    ...[
+                      if (child != null) child,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Id: '),
+                          Text(userProvider?.id.toString() ?? '-'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Phone: '),
+                          Text(userProvider?.phone ?? '-'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Birthday: '),
+                          Text(userProvider?.birthday != null
+                              ? convertStringToFormattedDateTime(
+                                  userProvider!.birthday.toString(),
+                                  format: 'dd-MM-yyyy',
+                                )
+                              : ''),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Nickname: '),
+                          Text(userProvider?.nickname ?? '-'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Email: '),
+                          Text(userProvider?.email ?? '-'),
+                        ],
+                      ),
+                    ].expand((element) => [
+                          element,
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ])
                   ],
                 ),
                 Row(
