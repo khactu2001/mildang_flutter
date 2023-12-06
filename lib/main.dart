@@ -25,28 +25,29 @@ Color textfieldDisabledTextColor = HexColor('626576');
 // const Color
 // const Color textErrorColor = Color(0xFFE01839);
 TextTheme textTheme = ThemeData().textTheme.copyWith(
-    titleLarge: TextStyle(
-      color: textHeaderColor,
-      fontWeight: FontWeight.w700,
-      fontSize: 24,
-    ),
-    titleMedium: TextStyle(
-      color: textLabelColor,
-      fontSize: 16,
-    ),
-    bodyMedium: TextStyle(
-      color: textfieldDisabledTextColor,
-      fontSize: 24,
-    ),
-    bodySmall: const TextStyle(
-      color: Color(0xFF090A0B),
-      fontSize: 18,
-      fontWeight: FontWeight.w400,
-    )
-    // disabledTextfieldColor: const TextStyle(
-    //   color: textfieldDisabledTextColor,
+      titleLarge: TextStyle(
+        color: textHeaderColor,
+        fontWeight: FontWeight.w700,
+        fontSize: 24,
+      ),
+      titleMedium: TextStyle(
+        color: textLabelColor,
+        fontSize: 16,
+      ),
+      bodyMedium: TextStyle(
+        color: textfieldDisabledTextColor,
+        fontSize: 24,
+      ),
+      bodySmall: const TextStyle(
+        color: Color(0xFF090A0B),
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+      ),
 
-    // ),
+      // disabledTextfieldColor: const TextStyle(
+      //   color: textfieldDisabledTextColor,
+
+      // ),
     );
 
 void main() {

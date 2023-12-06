@@ -74,10 +74,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _submitProfile() async {
     if (_formKey.currentState!.validate()) {
-      // await updateProfile({
-      //   'nickname': usernameController.text,
-      //   'email': emailController.text,
-      // });
+      await updateProfile({
+        'nickname': usernameController.text,
+        'email': emailController.text,
+      });
 
       widget.user.nickname = usernameController.text;
       widget.user.email = emailController.text;
