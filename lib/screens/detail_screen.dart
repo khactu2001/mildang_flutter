@@ -1,34 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/screens/detail_screen.dart';
-import 'package:flutter_mildang/screens/signup_screen.dart';
+import 'package:flutter_mildang/screens/edit_profile_screen.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
-// import 'package:flutter_mildang/widgets/bottom-tab/bottom_tabs.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({
+class DetailScreen extends StatelessWidget {
+  const DetailScreen({
     super.key,
-    this.title,
   });
 
-  final String? title;
-
   void logout(BuildContext context) {
-    context.go('/login');
+    // context.go('/login');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title ?? 'Home screen'),
-        centerTitle: true,
-      ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+        padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),
         child: Consumer<ChangeNotifierModel>(
           builder: (context, model, child) {
             UserModel? userProvider = model.userProvider;
@@ -102,53 +95,37 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const DetailScreen(),
-                        ));
+                        // Navigator.of(context)
+                        //     .popUntil(ModalRoute.withName('/'));
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const EditProfileScreen(),
+                        //   ),
+                        // );
                       },
                       child: const Text('Edit profile'),
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
                     ElevatedButton(
                       onPressed: () {
+                        context.go('/');
+                        // Navigator.of(context)
+                        //     .popUntil(ModalRoute.withName('/'));
                         // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const DetailScreen()));
-                        context.go('/detail');
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const EditProfileScreen(),
+                        //   ),
+                        // );
                       },
-                      child: const Text('Detail'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignupScreen()));
-                      },
-                      child: const Text('Signup'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const SignupScreen()));
-                        context.go('/login');
-                      },
-                      child: const Text('login'),
-                    ),
+                      child: const Text('back to home'),
+                    )
                   ],
                 )
               ],
             );
           },
-          child: const SizedBox(
-            height: 20,
-          ),
+          child: const Text('DETAIL SCREEN'),
         ),
       ),
     );
