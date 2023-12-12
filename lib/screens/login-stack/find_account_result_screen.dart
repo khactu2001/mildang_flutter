@@ -34,10 +34,11 @@ class FindAccountResultScreen extends StatelessWidget {
               ),
               ElevatedButton(
                   onPressed: () {
-                    // Navigator.of(context)
-                    //     .pushReplacementNamed('signup/signup2');
-                    // context.go('/login/find-account/find-account-result');
-                    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                    // Navigator.of(context).popUntil(
+                    //   ModalRoute.withName('LoginScreen'),
+                    // );
+
+                    context.goNamed('HomeScreen');
                   },
                   child: const Text('pop'))
             ],

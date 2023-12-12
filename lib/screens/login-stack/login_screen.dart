@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
+import 'package:flutter_mildang/model/authen_model.dart';
 // import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.addListener(_printLatestValue);
     passwordFocusNode.addListener(_checkPasswordFocus);
 
-    _loadUser();
+    // _loadUser();
   }
 
   Future<void> _loadUser() async {
@@ -65,11 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         Provider.of<ChangeNotifierModel>(context, listen: false)
             .updateUserProvider(userLocal);
-        context.go('/');
+        Provider.of<AuthenModel>(context).setAuthenticated(true);
+        // context.go('/');
       }
     } catch (e) {
-      await removeLocalVariable(LocalKeyCustom.user);
-      await removeLocalVariable(LocalKeyCustom.token);
+      print('${e.toString()}');
+      // await removeLocalVariable(LocalKeyCustom.user);
+      // await removeLocalVariable(LocalKeyCustom.token);
     }
   }
 
@@ -163,11 +166,13 @@ class _LoginScreenState extends State<LoginScreen> {
         // errorMessage = 'call api failed';
       });
 
+      // if (mounted) {
       Provider.of<ChangeNotifierModel>(context, listen: false)
           .updateUserProvider(value.data.user);
 
-      context.go('/', extra: jsonEncode(value.data.user));
-
+      Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+      context.go('/');
+      // }
       // Navigator.push(context, route)
     }).catchError((onError) {
       print('Data error: $onError');
@@ -178,6 +183,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }).whenComplete(() {
       Navigator.pop(context);
     });
+    // Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+    // context.go('/');
   }
 
   void logout() async {
@@ -405,10 +412,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 )),
             ElevatedButton(
               onPressed: () {
-                context.go('/login/find-account');
+                context.pushNamed('FindAccountScreen');
               },
               child: const Text('find account'),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.pushNamed('SignupScreen');
+              },
+              child: const Text('signup'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.pushNamed('HomeScreen');
+              },
+              child: const Text('Home'),
+            ),
           ],
         ),
       ),

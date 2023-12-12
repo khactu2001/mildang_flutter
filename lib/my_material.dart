@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
+import 'package:flutter_mildang/model/authen_model.dart';
+import 'package:flutter_mildang/model/change_notifier_model.dart';
+import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
 import 'package:flutter_mildang/screens/edit_profile_screen.dart';
 import 'package:flutter_mildang/screens/error_screen.dart';
@@ -7,13 +10,11 @@ import 'package:flutter_mildang/screens/home_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
-// import 'package:flutter_mildang/screens/signup_1_screen.dart';
 import 'package:flutter_mildang/screens/signup_screen.dart';
-// import 'package:flutter_mildang/screens/signup_screen.dart';
-// import 'package:flutter_mildang/screens/signup_screen.dart';
-// import 'package:flutter_mildang/utils/utilities.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/bottom-tab/bottom_tabs.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 final theme = ThemeData().copyWith(
   appBarTheme: const AppBarTheme().copyWith(
@@ -85,65 +86,102 @@ final theme = ThemeData().copyWith(
 );
 
 class MyMaterial extends StatelessWidget {
-  const MyMaterial({super.key});
+  MyMaterial({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router,
       theme: theme,
+      // routerDelegate: _router.routerDelegate,
+      // routeInformationParser: _router.routeInformationParser,
     );
   }
-}
 
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      name: 'home-stack',
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const MyScaffold();
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          name: 'detail',
-          path: 'detail',
-          builder: (BuildContext context, GoRouterState state) {
-            return const DetailScreen();
-          },
-        ),
-      ],
-    ),
-    GoRoute(
-        path: '/login',
+  // final GoRoute _route = GoRoute(path: path)
+
+  final GoRouter _router = GoRouter(
+    redirect: (context, state) async {
+      final Map<String, dynamic>? token =
+          await getLocalVariable(LocalKeyCustom.token);
+      final Map<String, dynamic>? userCheck =
+          await getLocalVariable(LocalKeyCustom.user);
+      print('user loaded from local: $userCheck');
+      print('token loaded from local: $token');
+      if (userCheck != null && token != null) {
+        try {
+          UserModel userLocal = UserModel.fromJson(userCheck);
+
+          if (context.mounted) {
+            Provider.of<ChangeNotifierModel>(context, listen: false)
+                .updateUserProvider(userLocal);
+            Provider.of<AuthenModel>(context, listen: false)
+                .setAuthenticated(true);
+          }
+        } catch (e) {
+          print('${e.toString()}');
+        }
+        return '/';
+      }
+
+      return null;
+    },
+    errorBuilder: (context, state) {
+      return const ErrorScreen();
+    },
+    initialLocation: '/login',
+    debugLogDiagnostics: true,
+    routes: <RouteBase>[
+      GoRoute(
+        name: 'HomeScreen',
+        path: '/',
         builder: (BuildContext context, GoRouterState state) {
-          return const LoginScreen();
+          return const MyScaffold();
         },
         routes: <RouteBase>[
           GoRoute(
-            name: 'find-account',
-            path: 'find-account',
+            name: 'DetailScreen',
+            path: 'detail',
             builder: (BuildContext context, GoRouterState state) {
-              return const FindAccountScreen();
+              print('----${state.extra}----');
+              return const DetailScreen();
             },
           ),
-          GoRoute(
-            name: 'find-account-result',
-            path: 'find-account-result',
-            builder: (BuildContext context, GoRouterState state) {
-              return const FindAccountResultScreen();
-            },
-          ),
-        ]),
-    GoRoute(
-      name: 'signup-screen',
-      path: '/signup',
-      builder: (BuildContext context, GoRouterState state) {
-        return const SignupScreen();
-      },
-    ),
-  ],
-);
+        ],
+        // route
+      ),
+      GoRoute(
+          name: 'LoginScreen',
+          path: '/login',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LoginScreen();
+          },
+          routes: <RouteBase>[
+            GoRoute(
+              name: 'FindAccountScreen',
+              path: 'find-account',
+              builder: (BuildContext context, GoRouterState state) {
+                return const FindAccountScreen();
+              },
+            ),
+            GoRoute(
+              name: 'FindAccountResultScreen',
+              path: 'find-account-result',
+              builder: (BuildContext context, GoRouterState state) {
+                return const FindAccountResultScreen();
+              },
+            ),
+          ]),
+      GoRoute(
+        name: 'SignupScreen',
+        path: '/signup',
+        builder: (BuildContext context, GoRouterState state) {
+          return const SignupScreen();
+        },
+      ),
+    ],
+  );
+}
 
 class MyScaffold extends StatefulWidget {
   const MyScaffold({
@@ -154,51 +192,9 @@ class MyScaffold extends StatefulWidget {
   State<MyScaffold> createState() => MyScaffoldState();
 }
 
-RouterConfig<Object>? routerConfig = GoRouter(
-  errorBuilder: (context, state) {
-    return const ErrorScreen();
-  },
-  initialLocation: '/login',
-  debugLogDiagnostics: true,
-  routes: [
-    GoRoute(
-        name: 'home_screen',
-        path: '/',
-        builder: (context, state) {
-          return const HomeScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'detail',
-            builder: (context, state) {
-              return const DetailScreen();
-            },
-          )
-        ]),
-    GoRoute(
-      name: 'edit_profile_screen',
-      path: '/edit',
-      builder: (context, state) {
-        return const EditProfileScreen();
-      },
-    ),
-    GoRoute(
-      name: 'login_screen',
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    // GoRoute(
-    //   name: 'signup_screen',
-    //   path: '/signup',
-    //   builder: (context, state) => const SignupScreen(),
-    // ),
-  ],
-);
-
 class MyScaffoldState extends State<MyScaffold> {
   String tabName = '/';
   int currentTabIndex = 0;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +243,6 @@ class MyScaffoldState extends State<MyScaffold> {
 
   Widget _buildBody() {
     return TabNavigator(
-      navigatorKey: navigatorKey,
       tabName: tabName,
       currentTabIndex: currentTabIndex,
     );
@@ -256,11 +251,7 @@ class MyScaffoldState extends State<MyScaffold> {
 
 class TabNavigator extends StatelessWidget {
   TabNavigator(
-      {super.key,
-      required this.navigatorKey,
-      required this.tabName,
-      required this.currentTabIndex});
-  final GlobalKey<NavigatorState> navigatorKey;
+      {super.key, required this.tabName, required this.currentTabIndex});
   final String tabName;
   final int currentTabIndex;
 

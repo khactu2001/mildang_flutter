@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/model/authen_model.dart';
 import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
@@ -22,6 +23,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'Provider.of<AuthenModel>(context).getAuthenticated ${Provider.of<AuthenModel>(context).getAuthenticated}');
     return Scaffold(
       appBar: AppBar(
         title: Text(title ?? 'Home screen'),
@@ -118,7 +121,9 @@ class HomeScreen extends StatelessWidget {
                         //     context,
                         //     MaterialPageRoute(
                         //         builder: (context) => const DetailScreen()));
-                        context.go('/detail');
+                        // context.go('/detail');
+                        context.pushNamed('DetailScreen',
+                            extra: userProvider.toString());
                       },
                       child: const Text('Detail'),
                     ),

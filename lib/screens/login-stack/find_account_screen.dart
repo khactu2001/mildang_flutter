@@ -34,7 +34,7 @@ class FindAccountScreen extends StatelessWidget {
               ),
               ElevatedButton(
                   onPressed: () {
-                    context.go('/login/find-account-result');
+                    context.pushNamed('FindAccountResultScreen');
                   },
                   child: const Text('go to find account result'))
             ],
