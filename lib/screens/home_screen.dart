@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mildang/model/authen_model.dart';
-import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/screens/detail_screen.dart';
-import 'package:flutter_mildang/screens/signup_screen.dart';
+import 'package:flutter_mildang/provider/authen_model.dart';
+import 'package:flutter_mildang/provider/change_notifier_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 // import 'package:flutter_mildang/widgets/bottom-tab/bottom_tabs.dart';
 import 'package:go_router/go_router.dart';
@@ -91,65 +89,65 @@ class HomeScreen extends StatelessWidget {
                         ])
                   ],
                 ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await removeLocalVariable(LocalKeyCustom.user);
-                        await removeLocalVariable(LocalKeyCustom.token);
+                // Row(
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () async {
+                //         await removeLocalVariable(LocalKeyCustom.user);
+                //         await removeLocalVariable(LocalKeyCustom.token);
 
-                        if (!context.mounted) return;
-                        Provider.of<AuthenModel>(context, listen: false)
-                            .setAuthenticated(false);
-                        logout(context);
-                      },
-                      child: const Text('Log out'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const DetailScreen(),
-                        ));
-                      },
-                      child: const Text('Edit profile'),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const DetailScreen()));
-                        // context.go('/detail');
-                        context.pushNamed('DetailScreen',
-                            extra: userProvider.toString());
-                      },
-                      child: const Text('Detail'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignupScreen()));
-                      },
-                      child: const Text('Signup'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const SignupScreen()));
-                        context.go('/login');
-                      },
-                      child: const Text('login'),
-                    ),
-                  ],
-                )
+                //         if (!context.mounted) return;
+                //         Provider.of<AuthenModel>(context, listen: false)
+                //             .setAuthenticated(false);
+                //         logout(context);
+                //       },
+                //       child: const Text('Log out'),
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         Navigator.of(context).push(MaterialPageRoute(
+                //           builder: (context) => const DetailScreen(),
+                //         ));
+                //       },
+                //       child: const Text('Edit profile'),
+                //     ),
+                //   ],
+                // ),
+                // Row(
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         // Navigator.push(
+                //         //     context,
+                //         //     MaterialPageRoute(
+                //         //         builder: (context) => const DetailScreen()));
+                //         // context.go('/detail');
+                //         context.pushNamed('DetailScreen',
+                //             extra: userProvider.toString());
+                //       },
+                //       child: const Text('Detail'),
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //                 builder: (context) => const SignupScreen()));
+                //       },
+                //       child: const Text('Signup'),
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         // Navigator.push(
+                //         //     context,
+                //         //     MaterialPageRoute(
+                //         //         builder: (context) => const SignupScreen()));
+                //         context.go('/login');
+                //       },
+                //       child: const Text('login'),
+                //     ),
+                //   ],
+                // )
               ],
             );
           },

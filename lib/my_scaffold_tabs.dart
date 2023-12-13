@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/screens/edit_profile_screen.dart';
 import 'package:flutter_mildang/screens/home_screen.dart';
+import 'package:flutter_mildang/screens/newsletter/newsletter_list.dart';
 import 'package:flutter_mildang/widgets/bottom-tab/bottom_tabs.dart';
 
 class MyScaffold extends StatefulWidget {
@@ -22,22 +23,11 @@ class MyScaffoldState extends State<MyScaffold> {
       body: _buildBody(),
       bottomNavigationBar: BottomTabs(
         tabName: tabName,
-        navigateTo: (path) {
+        navigateTo: (path, index) {
           setState(() {
             tabName = path;
+            currentTabIndex = index;
           });
-          switch (path) {
-            case '/':
-              setState(() {
-                currentTabIndex = 0;
-              });
-              break;
-            case '/edit':
-              setState(() {
-                currentTabIndex = 1;
-              });
-              break;
-          }
         },
       ),
     );
@@ -59,6 +49,7 @@ class TabNavigator extends StatelessWidget {
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    const NewsletterListScreen(),
     const EditProfileScreen(),
   ];
 

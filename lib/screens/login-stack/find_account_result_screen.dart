@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
+import 'package:flutter_mildang/provider/change_notifier_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

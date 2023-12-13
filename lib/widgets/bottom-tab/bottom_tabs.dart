@@ -2,30 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 
 class Tab {
-  const Tab(
-      {required this.icon,
-      required this.text,
-      required this.path,
-      required this.iconActive});
+  const Tab({
+    required this.icon,
+    required this.text,
+    required this.path,
+    required this.iconActive,
+    // required this.index,
+  });
 
   final Image icon;
   final Image iconActive;
   final String text;
   final String path;
+  // final int index;
 }
 
 final bottomButtons = [
   Tab(
-      icon: Image.asset('assets/icons/bottom-bar/dr_post.png'),
-      iconActive: Image.asset('assets/icons/bottom-bar/doctor_active.png'),
-      text: 'Home',
-      path: '/'),
-  // Tab(
-  //   icon: Image.asset('assets/icons/bottom-bar/newsletter.png'),
-  //   iconActive: Image.asset('assets/icons/bottom-bar/newsletter_active.png'),
-  //   text: 'Signup',
-  //   path: '/signup',
-  // ),
+    icon: Image.asset('assets/icons/bottom-bar/dr_post.png'),
+    iconActive: Image.asset('assets/icons/bottom-bar/doctor_active.png'),
+    text: 'Home',
+    path: '/',
+    // index: 0,
+  ),
+  Tab(
+    icon: Image.asset('assets/icons/bottom-bar/newsletter.png'),
+    iconActive: Image.asset('assets/icons/bottom-bar/newsletter_active.png'),
+    text: 'Newsletter',
+    path: '/signup',
+  ),
   // Tab(
   //   icon: Image.asset('assets/icons/bottom-bar/diary.png'),
   //   iconActive: Image.asset('assets/icons/bottom-bar/diary_active.png'),
@@ -49,7 +54,7 @@ final bottomButtons = [
 class BottomTabs extends StatelessWidget {
   const BottomTabs(
       {super.key, required this.navigateTo, required this.tabName});
-  final void Function(String) navigateTo;
+  final void Function(String, int) navigateTo;
   final String tabName;
 
   @override
@@ -70,12 +75,14 @@ class BottomTabs extends StatelessWidget {
       child: Row(
         children: [
           ...[
-            ...bottomButtons.map((button) {
+            ...bottomButtons.asMap().entries.map((entry) {
+              final button = entry.value;
+              final index = entry.key;
               final isActive = button.path == tabName;
               return TextButton(
                 style: ElevatedButton.styleFrom(),
                 onPressed: () {
-                  navigateTo(button.path);
+                  navigateTo(button.path, index);
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

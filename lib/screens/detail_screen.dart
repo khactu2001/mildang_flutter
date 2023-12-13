@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_mildang/model/authen_model.dart';
-import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/screens/edit_profile_screen.dart';
+import 'package:flutter_mildang/provider/authen_model.dart';
+import 'package:flutter_mildang/provider/change_notifier_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
-import 'package:flutter_mildang/model/authen_model.dart';
 import 'package:flutter_mildang/my_scaffold_tabs.dart';
+import 'package:flutter_mildang/provider/authen_model.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
-import 'package:flutter_mildang/screens/error_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/login_screen.dart';

@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
-import 'package:flutter_mildang/model/authen_model.dart';
-// import 'package:flutter_mildang/main.dart';
-import 'package:flutter_mildang/model/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/authen_model.dart';
+import 'package:flutter_mildang/provider/change_notifier_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
@@ -126,65 +123,60 @@ class _LoginScreenState extends State<LoginScreen> {
   void onSubmitLogin() async {
     // print(emailController.text);
 
-    // final String phone = phoneController.text;
-    // final String password = passwordController.text;
-    // Map<String, dynamic> postData = {
-    //   'phone': phone,
-    //   'password': password,
-    // };
-    // if (phone.length < 10 || password.length < 8) {
-    //   setState(() {
-    //     isError = true;
-    //     errorMessage = 'Validation failed';
-    //   });
-    //   return;
-    // }
-    // showDialog(
-    //   barrierDismissible: false,
-    //   context: context,
-    //   builder: (ctx) {
-    //     return const AlertDialog(
-    //       content: Row(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           CircularProgressIndicator(),
-    //           SizedBox(
-    //             width: 20,
-    //           ),
-    //           Text("Authenticating..."),
-    //         ],
-    //       ),
-    //     );
-    //   },
-    // );
-    // login(postData).then((value) {
-    //   // print('Data received: $value');
-    //   setState(() {
-    //     isError = false;
-    //     isLoggedIn = true;
-    //     user = value.data.user;
-    //     // errorMessage = 'call api failed';
-    //   });
+    final String phone = phoneController.text;
+    final String password = passwordController.text;
+    Map<String, dynamic> postData = {
+      'phone': phone,
+      'password': password,
+    };
+    if (phone.length < 10 || password.length < 8) {
+      setState(() {
+        isError = true;
+        errorMessage = 'Validation failed';
+      });
+      return;
+    }
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) {
+        return const AlertDialog(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 20,
+              ),
+              Text("Authenticating..."),
+            ],
+          ),
+        );
+      },
+    );
+    login(postData).then((value) {
+      // print('Data received: $value');
+      setState(() {
+        isError = false;
+        isLoggedIn = true;
+        user = value.data.user;
+        // errorMessage = 'call api failed';
+      });
 
-    //   // if (mounted) {
-    //   Provider.of<ChangeNotifierModel>(context, listen: false)
-    //       .updateUserProvider(value.data.user);
+      Provider.of<ChangeNotifierModel>(context, listen: false)
+          .updateUserProvider(value.data.user);
 
-    //   Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
-    //   context.go('/');
-    //   // }
-    //   // Navigator.push(context, route)
-    // }).catchError((onError) {
-    //   print('Data error: $onError');
-    //   setState(() {
-    //     isError = true;
-    //     errorMessage = '아이디 또는 비밀번호를 확인하세요!';
-    //   });
-    // }).whenComplete(() {
-    //   Navigator.pop(context);
-    // });
-    Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
-    context.pushNamed('HomeScreen');
+      Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+      context.goNamed('HomeScreen');
+    }).catchError((onError) {
+      print('Data error: $onError');
+      setState(() {
+        isError = true;
+        errorMessage = '아이디 또는 비밀번호를 확인하세요!';
+      });
+    }).whenComplete(() {
+      Navigator.pop(context);
+    });
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   // GoRouter.of(context).pushNamed('DetailScreen');
