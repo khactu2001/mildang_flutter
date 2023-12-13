@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   final String? title;
 
   void logout(BuildContext context) {
-    context.go('/login');
+    context.goNamed('LoginScreen');
   }
 
   @override
@@ -99,6 +99,8 @@ class HomeScreen extends StatelessWidget {
                         await removeLocalVariable(LocalKeyCustom.token);
 
                         if (!context.mounted) return;
+                        Provider.of<AuthenModel>(context, listen: false)
+                            .setAuthenticated(false);
                         logout(context);
                       },
                       child: const Text('Log out'),

@@ -126,65 +126,70 @@ class _LoginScreenState extends State<LoginScreen> {
   void onSubmitLogin() async {
     // print(emailController.text);
 
-    final String phone = phoneController.text;
-    final String password = passwordController.text;
-    Map<String, dynamic> postData = {
-      'phone': phone,
-      'password': password,
-    };
-    if (phone.length < 10 || password.length < 8) {
-      setState(() {
-        isError = true;
-        errorMessage = 'Validation failed';
-      });
-      return;
-    }
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (ctx) {
-        return const AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(
-                width: 20,
-              ),
-              Text("Authenticating..."),
-            ],
-          ),
-        );
-      },
-    );
-    login(postData).then((value) {
-      // print('Data received: $value');
-      setState(() {
-        isError = false;
-        isLoggedIn = true;
-        user = value.data.user;
-        // errorMessage = 'call api failed';
-      });
+    // final String phone = phoneController.text;
+    // final String password = passwordController.text;
+    // Map<String, dynamic> postData = {
+    //   'phone': phone,
+    //   'password': password,
+    // };
+    // if (phone.length < 10 || password.length < 8) {
+    //   setState(() {
+    //     isError = true;
+    //     errorMessage = 'Validation failed';
+    //   });
+    //   return;
+    // }
+    // showDialog(
+    //   barrierDismissible: false,
+    //   context: context,
+    //   builder: (ctx) {
+    //     return const AlertDialog(
+    //       content: Row(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           CircularProgressIndicator(),
+    //           SizedBox(
+    //             width: 20,
+    //           ),
+    //           Text("Authenticating..."),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
+    // login(postData).then((value) {
+    //   // print('Data received: $value');
+    //   setState(() {
+    //     isError = false;
+    //     isLoggedIn = true;
+    //     user = value.data.user;
+    //     // errorMessage = 'call api failed';
+    //   });
 
-      // if (mounted) {
-      Provider.of<ChangeNotifierModel>(context, listen: false)
-          .updateUserProvider(value.data.user);
+    //   // if (mounted) {
+    //   Provider.of<ChangeNotifierModel>(context, listen: false)
+    //       .updateUserProvider(value.data.user);
 
-      Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
-      context.go('/');
-      // }
-      // Navigator.push(context, route)
-    }).catchError((onError) {
-      print('Data error: $onError');
-      setState(() {
-        isError = true;
-        errorMessage = '아이디 또는 비밀번호를 확인하세요!';
-      });
-    }).whenComplete(() {
-      Navigator.pop(context);
-    });
-    // Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
-    // context.go('/');
+    //   Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+    //   context.go('/');
+    //   // }
+    //   // Navigator.push(context, route)
+    // }).catchError((onError) {
+    //   print('Data error: $onError');
+    //   setState(() {
+    //     isError = true;
+    //     errorMessage = '아이디 또는 비밀번호를 확인하세요!';
+    //   });
+    // }).whenComplete(() {
+    //   Navigator.pop(context);
+    // });
+    Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+    context.pushNamed('HomeScreen');
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   // GoRouter.of(context).pushNamed('DetailScreen');
+    //   // GoRouter.of(context).navigatorKey.currentState?.pushNamed('DetailScreen');
+    // });
   }
 
   void logout() async {
@@ -422,12 +427,13 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: const Text('signup'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                context.pushNamed('HomeScreen');
-              },
-              child: const Text('Home'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     context.pushNamed('HomeScreen');
+            //     // context.read()
+            //   },
+            //   child: const Text('Home'),
+            // ),
           ],
         ),
       ),

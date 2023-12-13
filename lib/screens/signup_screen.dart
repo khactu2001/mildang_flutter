@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/screens/signup_1_screen.dart';
 import 'package:flutter_mildang/screens/signup_2_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({
@@ -46,7 +47,7 @@ class SignupScreen extends StatelessWidget {
           case 'signup/signup2':
             builder = (BuildContext _) => Signup2Screen(
                   onSignupFinish: () {
-                    Navigator.of(context).pop();
+                    context.goNamed('LoginScreen');
                   },
                 );
 

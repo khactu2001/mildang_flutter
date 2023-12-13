@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/model/authen_model.dart';
 import 'package:flutter_mildang/model/change_notifier_model.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/screens/edit_profile_screen.dart';
@@ -14,7 +15,7 @@ class DetailScreen extends StatelessWidget {
   });
 
   void logout(BuildContext context) {
-    // context.go('/login');
+    context.goNamed('SignupScreen');
   }
 
   @override
@@ -89,6 +90,9 @@ class DetailScreen extends StatelessWidget {
                         await removeLocalVariable(LocalKeyCustom.token);
 
                         if (!context.mounted) return;
+                        Provider.of<AuthenModel>(context, listen: false)
+                            .setAuthenticated(false);
+
                         logout(context);
                       },
                       child: const Text('Log out'),

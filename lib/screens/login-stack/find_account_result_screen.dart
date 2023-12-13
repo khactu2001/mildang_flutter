@@ -38,7 +38,7 @@ class FindAccountResultScreen extends StatelessWidget {
                     //   ModalRoute.withName('LoginScreen'),
                     // );
 
-                    context.goNamed('HomeScreen');
+                    context.goNamed('LoginScreen');
                   },
                   child: const Text('pop'))
             ],
