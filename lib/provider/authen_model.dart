@@ -27,3 +27,5 @@ class AuthenModel extends ChangeNotifier {
     _token = null;
   }
 }
+
+// final authenInstance =  AuthenModel();

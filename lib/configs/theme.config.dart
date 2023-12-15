@@ -16,6 +16,7 @@ Color textfieldDisabledBackgroundColor = HexColor('F1F2F3');
 Color textfieldDisabledTextColor = HexColor('626576');
 Color textWhite = Colors.white;
 Color appBarColor = HexColor('00BCD4');
+Color borderColor = HexColor('#A3A5AE');
 
 TextTheme textTheme = ThemeData().textTheme.copyWith(
       titleLarge: TextStyle(

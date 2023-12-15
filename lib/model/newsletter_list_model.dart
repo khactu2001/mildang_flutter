@@ -24,16 +24,16 @@ class NewsletterListResponse {
 }
 
 class DataPagingList {
-  List<Items>? items;
+  List<NewsItems>? items;
   Paging? paging;
 
   DataPagingList({this.items, this.paging});
 
   DataPagingList.fromJson(Map<String, dynamic> json) {
     if (json['items'] != null) {
-      items = <Items>[];
+      items = <NewsItems>[];
       json['items'].forEach((v) {
-        items!.add(new Items.fromJson(v));
+        items!.add(new NewsItems.fromJson(v));
       });
     }
     paging =
@@ -52,7 +52,7 @@ class DataPagingList {
   }
 }
 
-class Items {
+class NewsItems {
   String? createdAt;
   String? updatedAt;
   int? id;
@@ -84,7 +84,7 @@ class Items {
   int? imageWidth;
   int? imageHeight;
 
-  Items(
+  NewsItems(
       {this.createdAt,
       this.updatedAt,
       this.id,
@@ -116,7 +116,7 @@ class Items {
       this.imageWidth,
       this.imageHeight});
 
-  Items.fromJson(Map<String, dynamic> json) {
+  NewsItems.fromJson(Map<String, dynamic> json) {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     id = json['id'];
