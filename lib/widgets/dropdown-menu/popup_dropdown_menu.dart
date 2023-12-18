@@ -29,7 +29,9 @@ class PopupDropdownMenu extends StatefulWidget {
 }
 
 class PopupDropdownMenuState extends State<PopupDropdownMenu> {
-  String? currentMenuItem = menus[0]['value'];
+  // String? currentMenuItem = menus[0]['value'];
+  String? currentMenuItem = 'Option 2';
+  bool menuOpened = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +106,34 @@ class PopupDropdownMenuState extends State<PopupDropdownMenu> {
     //   }).toList(),
     // );
     return PopupMenuButton<String>(
-      position: PopupMenuPosition.under,
-      offset: const Offset(0, 8),
+      initialValue: currentMenuItem,
+      onOpened: () {
+        setState(() {
+          menuOpened = true;
+        });
+      },
+      onCanceled: () {
+        setState(() {
+          menuOpened = false;
+        });
+      },
+      // position: PopupMenuPosition.under,
+      offset: const Offset(0, 10),
       itemBuilder: (BuildContext context) {
+        // showMenu(context: context, position: position, items: items)
         return <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            height: 20, // Add space above the first menu item
-            child: Container(), // Empty container to create the space
-          ),
+          // PopupMenuItem<String>(
+          //   height: 20, // Add space above the first menu item
+          //   child: Container(), // Empty container to create the space
+          // ),
           PopupMenuItem<String>(
             value: 'Option 1',
-            child: Text('Option 1'),
+            // padding: EdgeInsets.zero,
+            child: Container(
+                decoration: BoxDecoration(color: Colors.yellow),
+                child: Text('Option 1')),
           ),
+          const PopupMenuDivider(),
           PopupMenuItem<String>(
             value: 'Option 2',
             child: Text('Option 2'),
@@ -128,14 +146,35 @@ class PopupDropdownMenuState extends State<PopupDropdownMenu> {
       },
       onSelected: (String value) {
         // Handle selection
+        setState(() {
+          currentMenuItem = value;
+          menuOpened = false;
+        });
       },
-      child: Container(
-        padding: EdgeInsets.all(8.0), // Optional: Add padding to the button
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue, width: 2.0), // Button border
-          borderRadius: BorderRadius.circular(8.0),
+      // constraints: BoxConstraints.loose(Size.fromWidth(150)),
+      child: UnconstrainedBox(
+        child: Container(
+          // width: 150,
+          // height: 60,
+          padding:
+              const EdgeInsets.all(8.0), // Optional: Add padding to the button
+          decoration: BoxDecoration(
+            border:
+                Border.all(color: textLabelColor, width: 1.0), // Button border
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Row(
+            children: [
+              Text(
+                currentMenuItem ?? 'Select an option',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Icon(menuOpened ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+            ],
+          ),
         ),
-        child: Text('Select an option'),
       ),
     );
   }

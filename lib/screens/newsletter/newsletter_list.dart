@@ -5,6 +5,7 @@ import 'package:flutter_mildang/configs/theme.config.dart';
 // import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
 import 'package:flutter_mildang/widgets/dropdown-menu/dropdown_menu_custom.dart';
+import 'package:flutter_mildang/widgets/dropdown-menu/popup_dropdown_menu.dart';
 
 // class NewsletterListScreen extends StatelessWidget {
 //   const NewsletterListScreen({super.key});
@@ -107,94 +108,94 @@ class NewsletterListState extends State<NewsletterListScreen> {
             selectMenuItem: (menuValue) {},
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: newsletterList.length,
-            itemBuilder: (context, index) {
-              final item = newsletterList[index];
-              return Container(
-                key: ValueKey(item.image),
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: borderColor),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                // clipBehavior: Clip.hardEdge,
-                // child: ListTile(
-                //   title: Text('${item.title}'),
-                //   // Other tile configurations as needed
-                // ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (item.image != null)
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
-                        ),
-                        // child: Image.network(
-                        //   errorBuilder: (context, error, stackTrace) {
-                        //     return Text('error ${error}');
-                        //   },
-                        //   loadingBuilder: (context, widget, imageChunkEvent) {
-                        //     return const CircularProgressIndicator();
-                        //   },
-                        //   item.image ?? '',
-                        //   height: width * 2 / 3,
-                        //   width: double.infinity,
-                        //   fit: BoxFit.cover,
-                        // ),
-                        // child:
-                        //     Stack(alignment: AlignmentDirectional.center, children: [
-                        //   const Center(
-                        //       child: CircularProgressIndicator(
-                        //     strokeWidth: 2,
-                        //     color: Colors.grey,
-                        //   )),
-                        //   // FadeInImage.memoryNetwork(
-                        //   //   placeholder: kTransparentImage,
-                        //   //   image: item.image ?? '',
-                        //   //   height: width * 2 / 3,
-                        //   //   width: double.infinity,
-                        //   //   fit: BoxFit.cover,
-                        //   // ),
-                        //   CachedNetworkImage(
-                        //     imageUrl: item.image ?? '',
-                        //     placeholder: (context, url) =>
-                        //         CircularProgressIndicator(),
-                        //     errorWidget: (context, url, error) => Icon(Icons.error),
-                        //   ),
-                        // ]),
-                        child: CachedNetworkImage(
-                          imageUrl: item.image ?? '',
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(
-                            strokeWidth: 1,
-                          ),
-                          // errorWidget: (context, url, error) => Icon(Icons.error),
-                          height: width * 2 / 3,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 16),
-                      child: Text(item.title ?? '',
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontSize: 24,
-                                  )),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+        // Expanded(
+        //   child: ListView.builder(
+        //     controller: _scrollController,
+        //     padding: const EdgeInsets.symmetric(horizontal: 20),
+        //     itemCount: newsletterList.length,
+        //     itemBuilder: (context, index) {
+        //       final item = newsletterList[index];
+        //       return Container(
+        //         key: ValueKey(item.image),
+        //         margin: const EdgeInsets.symmetric(vertical: 10),
+        //         decoration: BoxDecoration(
+        //           border: Border.all(color: borderColor),
+        //           borderRadius: BorderRadius.circular(8.0),
+        //         ),
+        //         // clipBehavior: Clip.hardEdge,
+        //         // child: ListTile(
+        //         //   title: Text('${item.title}'),
+        //         //   // Other tile configurations as needed
+        //         // ),
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             if (item.image != null)
+        //               ClipRRect(
+        //                 borderRadius: const BorderRadius.only(
+        //                   topLeft: Radius.circular(8),
+        //                   topRight: Radius.circular(8),
+        //                 ),
+        //                 // child: Image.network(
+        //                 //   errorBuilder: (context, error, stackTrace) {
+        //                 //     return Text('error ${error}');
+        //                 //   },
+        //                 //   loadingBuilder: (context, widget, imageChunkEvent) {
+        //                 //     return const CircularProgressIndicator();
+        //                 //   },
+        //                 //   item.image ?? '',
+        //                 //   height: width * 2 / 3,
+        //                 //   width: double.infinity,
+        //                 //   fit: BoxFit.cover,
+        //                 // ),
+        //                 // child:
+        //                 //     Stack(alignment: AlignmentDirectional.center, children: [
+        //                 //   const Center(
+        //                 //       child: CircularProgressIndicator(
+        //                 //     strokeWidth: 2,
+        //                 //     color: Colors.grey,
+        //                 //   )),
+        //                 //   // FadeInImage.memoryNetwork(
+        //                 //   //   placeholder: kTransparentImage,
+        //                 //   //   image: item.image ?? '',
+        //                 //   //   height: width * 2 / 3,
+        //                 //   //   width: double.infinity,
+        //                 //   //   fit: BoxFit.cover,
+        //                 //   // ),
+        //                 //   CachedNetworkImage(
+        //                 //     imageUrl: item.image ?? '',
+        //                 //     placeholder: (context, url) =>
+        //                 //         CircularProgressIndicator(),
+        //                 //     errorWidget: (context, url, error) => Icon(Icons.error),
+        //                 //   ),
+        //                 // ]),
+        //                 child: CachedNetworkImage(
+        //                   imageUrl: item.image ?? '',
+        //                   placeholder: (context, url) =>
+        //                       const CircularProgressIndicator(
+        //                     strokeWidth: 1,
+        //                   ),
+        //                   // errorWidget: (context, url, error) => Icon(Icons.error),
+        //                   height: width * 2 / 3,
+        //                   width: double.infinity,
+        //                   fit: BoxFit.cover,
+        //                 ),
+        //               ),
+        //             Padding(
+        //               padding: const EdgeInsets.symmetric(
+        //                   vertical: 12, horizontal: 16),
+        //               child: Text(item.title ?? '',
+        //                   style:
+        //                       Theme.of(context).textTheme.titleLarge?.copyWith(
+        //                             fontSize: 24,
+        //                           )),
+        //             ),
+        //           ],
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }

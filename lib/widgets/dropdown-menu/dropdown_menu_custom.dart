@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
-import 'package:flutter_mildang/utils/utilities.dart';
+// import 'package:flutter_mildang/utils/utilities.dart';
 
 // final menus = <DropdownMenuEntry<Object>>[
 //   const DropdownMenuEntry(value: '1', label: 'Text 1'),
@@ -51,8 +51,11 @@ class DropdownCustomState extends State<DropdownCustom> {
           alignment: const AlignmentDirectional(-1, 1.2),
           backgroundColor: MaterialStateProperty.resolveWith<Color?>(
             (Set<MaterialState> states) {
-              return Colors.white;
-              // return Colors.transparent;
+              return Colors.black;
+              // return itemSelectedColor;
+              // return HexColor('#F0F7F9');
+              // return const Color(0xFFF0F7F9);
+              // return Colors.black;
             },
           ),
           padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry?>(
@@ -73,14 +76,13 @@ class DropdownCustomState extends State<DropdownCustom> {
         },
         dropdownMenuEntries: menus.map((menu) {
           return DropdownMenuEntry(
+            // labelWidget: Text('haha'),
             style: MenuItemButton.styleFrom(
-              foregroundColor: Colors.black,
-              // backgroundColor: Colors.transparent,
-              // backgroundColor: Colors.white,
-              // textStyle: const TextStyle(
-              //   backgroundColor: Colors.red,
-              //   color: Colors.amberAccent,
-              // ),
+              // foregroundColor: Colors.white,
+              backgroundColor: Colors.black,
+              // surfaceTintColor: Colors.amber,
+              // backgroundColor: Colors.amberAccent,
+              // textStyle: TextStyle(color: Colors.yellow),
             ),
             value: menu['value'],
             label: menu['label']!,
