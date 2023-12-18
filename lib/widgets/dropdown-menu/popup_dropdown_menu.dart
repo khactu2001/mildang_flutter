@@ -130,15 +130,15 @@ class PopupDropdownMenuState extends State<PopupDropdownMenu> {
             value: 'Option 1',
             // padding: EdgeInsets.zero,
             child: Container(
-                decoration: BoxDecoration(color: Colors.yellow),
-                child: Text('Option 1')),
+                decoration: const BoxDecoration(color: Colors.yellow),
+                child: const Text('Option 1')),
           ),
           const PopupMenuDivider(),
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Option 2',
             child: Text('Option 2'),
           ),
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Option 3',
             child: Text('Option 3'),
           ),

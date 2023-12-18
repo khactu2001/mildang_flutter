@@ -15,6 +15,27 @@ import 'package:flutter_mildang/widgets/dropdown-menu/popup_dropdown_menu.dart';
 //     return const Text('Newsletter List');
 //   }
 // }
+
+class Category {
+  Category({
+    required this.label,
+    required this.value,
+  });
+  final String label;
+  final String value;
+}
+
+final List<Category> categories = [
+  Category(label: 'cate 111111', value: '1'),
+  Category(label: 'cate 2', value: '2'),
+  Category(label: 'cate 3444444', value: '3'),
+  Category(label: 'cate 444', value: '4'),
+  Category(label: 'cate 544', value: '5'),
+  Category(label: 'cate 64', value: '6'),
+  Category(label: 'cate 7', value: '7'),
+  Category(label: 'cate 8098345983945', value: '8'),
+];
+
 class NewsletterListScreen extends StatefulWidget {
   const NewsletterListScreen({super.key});
 
@@ -59,19 +80,40 @@ class NewsletterListState extends State<NewsletterListScreen> {
     }
   }
 
+  void resetDataWithSort(String sortType) {
+    currentPage = 1;
+    Map<String, dynamic> queryParams = {
+      'page': currentPage,
+      'limit': limit,
+    };
+    if (sortType == 'DESC' || sortType == 'ASC') {
+      queryParams.addAll({
+        'sort[issueDate]': sortType,
+      });
+    } else {
+      queryParams.addAll({
+        'sort[likeCount]': 'DESC',
+      });
+    }
+
+    fetchData(queryParams);
+  }
+
   Future fetchData(Map<String, dynamic> params) async {
-    // Future<DataPagingList?> dataPagingList =  getNewsletters();
+    print(params);
     DataPagingList? dataPagingList = await getNewsletters(params: params);
     total = dataPagingList?.paging?.total ?? 0;
     totalPage = dataPagingList?.paging?.totalPage ?? 0;
     if (dataPagingList == null) return;
     setState(() {
+      if (currentPage == 1) {
+        newsletterList = [];
+      }
       newsletterList.addAll(dataPagingList.items ?? []);
     });
   }
 
   final ScrollController _scrollController = ScrollController();
-  // scrollController.
 
   @override
   Widget build(BuildContext context) {
@@ -97,106 +139,164 @@ class NewsletterListState extends State<NewsletterListScreen> {
     // })
 
     final width = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 48),
-          // child: PopupDropdownMenu(
-          //   selectMenuItem: (menuValue) {},
-          // ),
-          child: DropdownCustom(
-            selectMenuItem: (menuValue) {},
+    final height = MediaQuery.of(context).size.height;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          Container(
+            width: width,
+            margin: const EdgeInsets.only(top: 48),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                DropdownCustom(
+                  selectMenuItem: (menuValue) {
+                    resetDataWithSort(menuValue);
+                  },
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 16),
+                  width: 44,
+                  height: 44,
+                  child: IconButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          side: const BorderSide(color: Colors.black)),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return LayoutBuilder(
+                                  builder: ((context, constraints) {
+                                return SizedBox(
+                                    height: height / 2,
+                                    child: Column(children: [
+                                      Expanded(
+                                        child: Container(),
+                                      ),
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(16),
+                                            topRight: Radius.circular(16),
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                        child: Column(children: [
+                                          const Text('ajhdf'),
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.yellow,
+                                            ),
+                                            child: Wrap(
+                                              runSpacing: 8,
+                                              spacing: 8,
+                                              children:
+                                                  categories.map((category) {
+                                                return ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text(category.label),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                          // ListView.builder(itemBuilder: (context, constraints) {
+                                          //   return ElevatedButton(
+                                          //       onPressed: () {},
+                                          //       child: Text(category.label),
+                                          //     )
+                                          // }),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Cancel')),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Ok')),
+                                            ],
+                                          )
+                                        ]),
+                                      ),
+                                    ]));
+                              }));
+                            });
+                      },
+                      icon: Image.asset(
+                        'assets/icons/newsletter/filter.png',
+                      )),
+                )
+              ],
+            ),
           ),
-        ),
-        // Expanded(
-        //   child: ListView.builder(
-        //     controller: _scrollController,
-        //     padding: const EdgeInsets.symmetric(horizontal: 20),
-        //     itemCount: newsletterList.length,
-        //     itemBuilder: (context, index) {
-        //       final item = newsletterList[index];
-        //       return Container(
-        //         key: ValueKey(item.image),
-        //         margin: const EdgeInsets.symmetric(vertical: 10),
-        //         decoration: BoxDecoration(
-        //           border: Border.all(color: borderColor),
-        //           borderRadius: BorderRadius.circular(8.0),
-        //         ),
-        //         // clipBehavior: Clip.hardEdge,
-        //         // child: ListTile(
-        //         //   title: Text('${item.title}'),
-        //         //   // Other tile configurations as needed
-        //         // ),
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             if (item.image != null)
-        //               ClipRRect(
-        //                 borderRadius: const BorderRadius.only(
-        //                   topLeft: Radius.circular(8),
-        //                   topRight: Radius.circular(8),
-        //                 ),
-        //                 // child: Image.network(
-        //                 //   errorBuilder: (context, error, stackTrace) {
-        //                 //     return Text('error ${error}');
-        //                 //   },
-        //                 //   loadingBuilder: (context, widget, imageChunkEvent) {
-        //                 //     return const CircularProgressIndicator();
-        //                 //   },
-        //                 //   item.image ?? '',
-        //                 //   height: width * 2 / 3,
-        //                 //   width: double.infinity,
-        //                 //   fit: BoxFit.cover,
-        //                 // ),
-        //                 // child:
-        //                 //     Stack(alignment: AlignmentDirectional.center, children: [
-        //                 //   const Center(
-        //                 //       child: CircularProgressIndicator(
-        //                 //     strokeWidth: 2,
-        //                 //     color: Colors.grey,
-        //                 //   )),
-        //                 //   // FadeInImage.memoryNetwork(
-        //                 //   //   placeholder: kTransparentImage,
-        //                 //   //   image: item.image ?? '',
-        //                 //   //   height: width * 2 / 3,
-        //                 //   //   width: double.infinity,
-        //                 //   //   fit: BoxFit.cover,
-        //                 //   // ),
-        //                 //   CachedNetworkImage(
-        //                 //     imageUrl: item.image ?? '',
-        //                 //     placeholder: (context, url) =>
-        //                 //         CircularProgressIndicator(),
-        //                 //     errorWidget: (context, url, error) => Icon(Icons.error),
-        //                 //   ),
-        //                 // ]),
-        //                 child: CachedNetworkImage(
-        //                   imageUrl: item.image ?? '',
-        //                   placeholder: (context, url) =>
-        //                       const CircularProgressIndicator(
-        //                     strokeWidth: 1,
-        //                   ),
-        //                   // errorWidget: (context, url, error) => Icon(Icons.error),
-        //                   height: width * 2 / 3,
-        //                   width: double.infinity,
-        //                   fit: BoxFit.cover,
-        //                 ),
-        //               ),
-        //             Padding(
-        //               padding: const EdgeInsets.symmetric(
-        //                   vertical: 12, horizontal: 16),
-        //               child: Text(item.title ?? '',
-        //                   style:
-        //                       Theme.of(context).textTheme.titleLarge?.copyWith(
-        //                             fontSize: 24,
-        //                           )),
-        //             ),
-        //           ],
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ),
-      ],
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              itemCount: newsletterList.length,
+              itemBuilder: (context, index) {
+                final item = newsletterList[index];
+                return Container(
+                  key: ValueKey(item.image),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  // clipBehavior: Clip.hardEdge,
+                  // child: ListTile(
+                  //   title: Text('${item.title}'),
+                  //   // Other tile configurations as needed
+                  // ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (item.image != null)
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: item.image ?? '',
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(
+                              strokeWidth: 1,
+                            ),
+                            height: width * 2 / 3,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        child: Text(item.title ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontSize: 24,
+                                )),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
