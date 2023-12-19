@@ -1,26 +1,33 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
+import 'package:flutter_mildang/model/newsletter_list_model.dart';
 import 'package:flutter_mildang/my_scaffold_tabs.dart';
 import 'package:flutter_mildang/provider/authen_model.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
+import 'package:flutter_mildang/screens/newsletter/newsletter_bookmark.dart';
+import 'package:flutter_mildang/screens/newsletter/newsletter_detail.dart';
 import 'package:flutter_mildang/screens/signup_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 final theme = ThemeData().copyWith(
   appBarTheme: const AppBarTheme().copyWith(
-    backgroundColor: appBarColor,
-    foregroundColor: textWhite,
     elevation: 2.0,
     shadowColor: Colors.grey,
+    backgroundColor: Colors.white,
+    foregroundColor: textLabelColor,
+    surfaceTintColor: Colors.transparent,
   ),
   useMaterial3: true,
   colorScheme: kColorScheme,
   textTheme: textTheme,
   buttonTheme: const ButtonThemeData(),
+
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: kColorScheme.primary,
@@ -196,6 +203,7 @@ final theme = ThemeData().copyWith(
 // );
 
 final GoRouter generalRouter = GoRouter(
+  debugLogDiagnostics: true,
   redirect: (context, state) {
     // user is in private routes AND token expired
     final authenModel = Provider.of<AuthenModel>(context, listen: false);
@@ -229,9 +237,50 @@ final GoRouter generalRouter = GoRouter(
             return const DetailScreen();
           },
         ),
+        GoRoute(
+          name: 'NewsletterDetailScreen',
+          path: 'news-detail',
+          builder: (BuildContext context, GoRouterState state) {
+            print('----${state.extra}----');
+            NewsItems newsItems =
+                NewsItems.fromJson(jsonDecode(state.extra.toString()));
+            return NewsletterDetailScreen(
+              newsItems: newsItems,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'NewsletterBookmarkScreen',
+          path: 'news-bookmark',
+          builder: (BuildContext context, GoRouterState state) {
+            return const NewsletterBookmarkScreen();
+          },
+        ),
       ],
       // route
     ),
+    // GoRoute(
+    //   name: 'NewsletterListScreen',
+    //   path: '/news',
+    //   builder: (BuildContext context, GoRouterState state) {
+    //     return const MyScaffold();
+    //   },
+    //   routes: <RouteBase>[
+    //     GoRoute(
+    //       name: 'NewsletterDetailScreen',
+    //       path: 'detail',
+    //       builder: (BuildContext context, GoRouterState state) {
+    //         print('----${state.extra}----');
+    //         NewsItems newsItems =
+    //             NewsItems.fromJson(jsonDecode(state.extra.toString()));
+    //         return NewsletterDetailScreen(
+    //           newsItems: newsItems,
+    //         );
+    //       },
+    //     ),
+    //   ],
+    //   // route
+    // ),
     GoRoute(
         name: 'LoginScreen',
         path: '/public-routes',

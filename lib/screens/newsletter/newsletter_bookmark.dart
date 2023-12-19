@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
 // import 'package:flutter_mildang/apis/newsletter.api.dart';
@@ -38,18 +39,18 @@ final List<Category> categories = [
   Category(label: 'cate 8098345983945', value: '8'),
 ];
 
-class NewsletterListScreen extends StatefulWidget {
-  const NewsletterListScreen({super.key});
+class NewsletterBookmarkScreen extends StatefulWidget {
+  const NewsletterBookmarkScreen({super.key});
 
   @override
-  State<NewsletterListScreen> createState() => NewsletterListState();
+  State<NewsletterBookmarkScreen> createState() => NewsletterListState();
 }
 
-class NewsletterListState extends State<NewsletterListScreen> {
+class NewsletterListState extends State<NewsletterBookmarkScreen> {
   // late Future<DataPagingList?> newsletterList;
   late List<NewsItems> newsletterList = [];
   int currentPage = 1;
-  final int limit = 10;
+  final int limit = 20;
   int total = 0;
   int totalPage = 0;
 
@@ -134,7 +135,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
                       color: Colors.white,
                     ),
                     child: Column(children: [
-                      const Text('ajhdf'),
+                      const Text('카테고리'),
                       SizedBox(
                         width: double.infinity,
                         child: Wrap(
@@ -168,33 +169,9 @@ class NewsletterListState extends State<NewsletterListScreen> {
                                 ),
                               ),
                             );
-                            // return Container(
-                            //   decoration: BoxDecoration(
-                            //     border: Border.all(
-                            //         color:
-                            //             categoryUnselectedBorderColor),
-                            //     borderRadius:
-                            //         BorderRadius.all(
-                            //             Radius.circular(8)),
-                            //   ),
-                            //   child: TextButton(
-                            //       onPressed: () {},
-                            //       child: Text(
-                            //         category.label,
-                            //         style: const TextStyle(
-                            //           color: Colors.black,
-                            //         ),
-                            //       )),
-                            // );
                           }).toList(),
                         ),
                       ),
-                      // ListView.builder(itemBuilder: (context, constraints) {
-                      //   return ElevatedButton(
-                      //       onPressed: () {},
-                      //       child: Text(category.label),
-                      //     )
-                      // }),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -219,46 +196,26 @@ class NewsletterListState extends State<NewsletterListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return ListView.builder(itemBuilder: ((context, index) {
-    //   final newsletterItem = newsletterList[index];
-    //   return Container(
-    //     decoration: BoxDecoration(
-    //         border: Border.all(),
-    //         borderRadius: const BorderRadius.all(Radius.circular(8))),
-    //     child: Text('${newsletterItem.title}'),
-    //   );
-    // }));
-    // return FutureBuilder(future: newsletterList, builder: (context, snapshot){
-    //   if (snapshot.connectionState == ConnectionState.waiting) {
-    //         return Center(child: CircularProgressIndicator());
-    //       } else if (snapshot.hasError) {
-    //         return Center(child: Text('Error: ${snapshot.error}'));
-    //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-    //         return Center(child: Text('No data available'));
-    //       } else {
-
-    //       }
-    // })
-
-    final width = MediaQuery.of(context).size.width;
+    // final width = MediaQuery.of(context).size.width;
+    final itemWidth = MediaQuery.of(context).size.width / 2 - 6;
+    const ratio = 170 / 209;
+    final itemHeight = itemWidth / ratio;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 56,
-        title: const Text('뉴스레터'),
+        title: const Text('Bookmark Screen'),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: Image.asset('assets/icons/newsletter/bookmark_list.png'),
+          icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () {
-            context.pushNamed('NewsletterBookmarkScreen');
+            context.pop();
           },
         ),
         actions: [
           IconButton(
-            icon: Image.asset('assets/icons/newsletter/search.png'),
-            onPressed: () {
-              context.pushNamed('NewsletterBookmarkScreen');
-            },
+            icon: Image.asset('assets/icons/newsletter/filter.png'),
+            onPressed: _openBottomModal,
           ),
         ],
       ),
@@ -266,93 +223,69 @@ class NewsletterListState extends State<NewsletterListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            Container(
-              width: width,
-              margin: const EdgeInsets.only(top: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  DropdownCustom(
-                    selectMenuItem: (menuValue) {
-                      resetDataWithSort(menuValue);
-                    },
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 16),
-                    width: 44,
-                    height: 44,
-                    child: IconButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                            ),
-                            side: const BorderSide(color: Colors.black)),
-                        onPressed: _openBottomModal,
-                        icon: Image.asset(
-                          'assets/icons/newsletter/filter.png',
-                        )),
-                  )
-                ],
-              ),
-            ),
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                itemCount: newsletterList.length,
-                itemBuilder: (context, index) {
-                  final item = newsletterList[index];
-                  return InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, 'NewsletterDetailScreen');
-                      context.pushNamed('NewsletterDetailScreen',
-                          extra: jsonEncode(item));
-                    },
-                    child: Container(
-                      key: ValueKey(item.image),
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: borderColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (item.image != null)
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8),
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: item.image ?? '',
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(
-                                  strokeWidth: 1,
+              child: GridView.builder(
+                  controller: _scrollController,
+                  addAutomaticKeepAlives: true,
+                  padding: const EdgeInsets.all(0),
+                  itemCount: newsletterList.isEmpty ? 0 : newsletterList.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: ratio,
+                  ),
+                  itemBuilder: (context, index) {
+                    if (newsletterList.isEmpty) return null;
+                    final item = newsletterList[index];
+                    return InkWell(
+                      onTap: () {
+                        context.pushNamed('NewsletterDetailScreen',
+                            extra: jsonEncode(item));
+                      },
+                      child: Container(
+                        key: ValueKey(item.image),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: borderColor),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (item.image != null)
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
                                 ),
-                                height: width * 2 / 3,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
+                                child: CachedNetworkImage(
+                                  imageUrl: item.image ?? '',
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(
+                                    strokeWidth: 1,
+                                  ),
+                                  height: itemHeight * 113 / 209,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Text(item.title ?? '',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontSize: 20,
+                                        overflow: TextOverflow.ellipsis,
+                                      )),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 16),
-                            child: Text(item.title ?? '',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      fontSize: 24,
-                                    )),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  }),
             ),
           ],
         ),

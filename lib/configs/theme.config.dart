@@ -18,6 +18,8 @@ Color textWhite = Colors.white;
 Color appBarColor = HexColor('00BCD4');
 Color borderColor = HexColor('#A3A5AE');
 Color itemSelectedColor = HexColor('#F0F7F9');
+Color categoryUnselectedColor = HexColor('#F5F6F7');
+Color categoryUnselectedBorderColor = HexColor('#E1E2E5');
 
 TextTheme textTheme = ThemeData().textTheme.copyWith(
       titleLarge: TextStyle(
