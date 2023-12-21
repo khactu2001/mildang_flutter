@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
-import 'package:flutter_mildang/provider/authen_model.dart';
-import 'package:flutter_mildang/provider/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
@@ -61,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       if (mounted) {
-        Provider.of<ChangeNotifierModel>(context, listen: false)
+        Provider.of<UserProvider>(context, listen: false)
             .updateUserProvider(userLocal);
-        Provider.of<AuthenModel>(context).setAuthenticated(true);
+        Provider.of<AuthenProvider>(context).setAuthenticated(true);
         // context.go('/');
       }
     } catch (e) {
@@ -163,10 +163,11 @@ class _LoginScreenState extends State<LoginScreen> {
         // errorMessage = 'call api failed';
       });
 
-      Provider.of<ChangeNotifierModel>(context, listen: false)
+      Provider.of<UserProvider>(context, listen: false)
           .updateUserProvider(value.data.user);
 
-      Provider.of<AuthenModel>(context, listen: false).setAuthenticated(true);
+      Provider.of<AuthenProvider>(context, listen: false)
+          .setAuthenticated(true);
       context.goNamed('HomeScreen');
     }).catchError((onError) {
       print('Data error: $onError');
@@ -389,7 +390,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 margin: const EdgeInsets.only(top: 48),
-                child: Consumer<ChangeNotifierModel>(
+                child: Consumer<UserProvider>(
                   builder: (context, model, child) => ElevatedButton(
                     onPressed: onSubmitLogin,
                     style: ElevatedButton.styleFrom(

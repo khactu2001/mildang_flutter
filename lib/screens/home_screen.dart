@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/provider/authen_model.dart';
-import 'package:flutter_mildang/provider/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/dropdown-menu/dropdown_menu_custom.dart';
 // import 'package:flutter_mildang/widgets/bottom-tab/bottom_tabs.dart';
@@ -24,15 +24,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(
-        'Provider.of<AuthenModel>(context).getAuthenticated ${Provider.of<AuthenModel>(context).getAuthenticated}');
+        'Provider.of<AuthenProvider>(context).getAuthenticated ${Provider.of<AuthenProvider>(context).getAuthenticated}');
     return Scaffold(
       appBar: AppBar(
-        title: Text(title ?? 'Home screen'),
+        title: Text(title ?? 'Home screeeeeeeen'),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-        child: Consumer<ChangeNotifierModel>(
+        child: Consumer<UserProvider>(
           builder: (context, model, child) {
             UserModel? userProvider = model.userProvider;
             print('userProvider: ${userProvider?.nickname}');

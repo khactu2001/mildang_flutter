@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/provider/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,7 @@ class FindAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),
-      child: Consumer<ChangeNotifierModel>(
+      child: Consumer<UserProvider>(
         builder: (context, model, child) {
           UserModel? userProvider = model.userProvider;
           print('userProvider: ${userProvider?.nickname}');

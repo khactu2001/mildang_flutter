@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 
-class ChangeNotifierModel extends ChangeNotifier {
+class UserProvider extends ChangeNotifier {
   UserModel? userProvider;
 
   void updateUserProvider(UserModel? user) {

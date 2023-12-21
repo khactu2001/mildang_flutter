@@ -44,7 +44,7 @@ class DropdownCustomState extends State<DropdownCustom> {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu(
-      width: 100,
+      // width: 100,
       initialSelection: currentMenuItem,
       textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 14,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
 import 'package:flutter_mildang/my_scaffold_tabs.dart';
-import 'package:flutter_mildang/provider/authen_model.dart';
+import 'package:flutter_mildang/provider/authen_provider.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
@@ -27,7 +27,7 @@ final theme = ThemeData().copyWith(
   colorScheme: kColorScheme,
   textTheme: textTheme,
   buttonTheme: const ButtonThemeData(),
-
+  scaffoldBackgroundColor: Colors.white,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: kColorScheme.primary,
@@ -85,132 +85,18 @@ final theme = ThemeData().copyWith(
     ),
   ),
 );
-// final GoRouter _publicRouter = GoRouter(
-//   // redirect: (context, state) async {
-//   //   final Map<String, dynamic>? token =
-//   //       await getLocalVariable(LocalKeyCustom.token);
-//   //   final Map<String, dynamic>? userCheck =
-//   //       await getLocalVariable(LocalKeyCustom.user);
-//   //   print('user loaded from local: $userCheck');
-//   //   print('token loaded from local: $token');
-//   //   if (userCheck != null && token != null) {
-//   //     try {
-//   //       UserModel userLocal = UserModel.fromJson(userCheck);
-
-//   //       if (context.mounted) {
-//   //         Provider.of<ChangeNotifierModel>(context, listen: false)
-//   //             .updateUserProvider(userLocal);
-//   //         Provider.of<AuthenModel>(context, listen: false)
-//   //             .setAuthenticated(true);
-//   //       }
-//   //     } catch (e) {
-//   //       print('${e.toString()}');
-//   //     }
-//   //     return '/';
-//   //   }
-
-//   //   return null;
-//   // },
-//   errorBuilder: (context, state) {
-//     return const ErrorScreen();
-//   },
-//   initialLocation: '/login',
-//   debugLogDiagnostics: true,
-//   routes: <RouteBase>[
-//     GoRoute(
-//         name: 'LoginScreen',
-//         path: '/login',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return const LoginScreen();
-//         },
-//         routes: <RouteBase>[
-//           GoRoute(
-//             name: 'FindAccountScreen',
-//             path: 'find-account',
-//             builder: (BuildContext context, GoRouterState state) {
-//               return const FindAccountScreen();
-//             },
-//           ),
-//           GoRoute(
-//             name: 'FindAccountResultScreen',
-//             path: 'find-account-result',
-//             builder: (BuildContext context, GoRouterState state) {
-//               return const FindAccountResultScreen();
-//             },
-//           ),
-//         ]),
-//     GoRoute(
-//       name: 'SignupScreen',
-//       path: '/signup',
-//       builder: (BuildContext context, GoRouterState state) {
-//         return const SignupScreen();
-//       },
-//     ),
-//   ],
-// );
-// final GoRouter _privateRouter = GoRouter(
-//   redirect: (context, state) async {
-//     // final Map<String, dynamic>? token =
-//     //     await getLocalVariable(LocalKeyCustom.token);
-//     // final Map<String, dynamic>? userCheck =
-//     //     await getLocalVariable(LocalKeyCustom.user);
-//     // print('user loaded from local: $userCheck');
-//     // print('token loaded from local: $token');
-//     // if (userCheck != null && token != null) {
-//     //   try {
-//     //     UserModel userLocal = UserModel.fromJson(userCheck);
-
-//     //     if (context.mounted) {
-//     //       Provider.of<ChangeNotifierModel>(context, listen: false)
-//     //           .updateUserProvider(userLocal);
-//     //       Provider.of<AuthenModel>(context, listen: false)
-//     //           .setAuthenticated(true);
-//     //     }
-//     //   } catch (e) {
-//     //     print('${e.toString()}');
-//     //   }
-//     //   return '/';
-//     // }
-//     // print(state);
-
-//     return null;
-//   },
-//   errorBuilder: (context, state) {
-//     return const ErrorScreen();
-//   },
-//   initialLocation: '/',
-//   debugLogDiagnostics: true,
-//   routes: <RouteBase>[
-//     GoRoute(
-//       name: 'HomeScreen',
-//       path: '/',
-//       builder: (BuildContext context, GoRouterState state) {
-//         return const MyScaffold();
-//       },
-//       routes: <RouteBase>[
-//         GoRoute(
-//           name: 'DetailScreen',
-//           path: 'detail',
-//           builder: (BuildContext context, GoRouterState state) {
-//             print('----${state.extra}----');
-//             return const DetailScreen();
-//           },
-//         ),
-//       ],
-//       // route
-//     ),
-//   ],
-// );
 
 final GoRouter generalRouter = GoRouter(
+  navigatorKey: navigatorKey,
   debugLogDiagnostics: true,
   redirect: (context, state) {
     // user is in private routes AND token expired
-    final authenModel = Provider.of<AuthenModel>(context, listen: false);
+    final authenProvider = Provider.of<AuthenProvider>(context, listen: false);
+    // final authenProvider  = AuthenProvider(_isAuthenticated, _token)
     final matchedLocation = state.matchedLocation;
 
     // not logged in
-    if (authenModel.getAuthenticated == false) {
+    if (authenProvider.getAuthenticated == false) {
       // navigate to some public screens
       if (matchedLocation.startsWith('/public-routes') &&
           matchedLocation != '/public-routes') {
@@ -312,24 +198,18 @@ final GoRouter generalRouter = GoRouter(
         ]),
   ],
 );
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyMaterial extends StatelessWidget {
   const MyMaterial({
     super.key,
-    // required this.isLoggedIn,
   });
-
-  // final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
-    // final isAuthenticated = Provider.of<AuthenModel>(context).getAuthenticated;
     return MaterialApp.router(
       routerConfig: generalRouter,
-      // routerConfig: isAuthenticated ? _privateRouter : _publicRouter,
       theme: theme,
     );
   }
-
-  // final GoRoute _route = GoRoute(path: path)
 }

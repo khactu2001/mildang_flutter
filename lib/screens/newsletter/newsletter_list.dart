@@ -217,6 +217,8 @@ class NewsletterListState extends State<NewsletterListScreen> {
         });
   }
 
+  bool isBookmark = false;
+
   @override
   Widget build(BuildContext context) {
     // return ListView.builder(itemBuilder: ((context, index) {
@@ -246,7 +248,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
         toolbarHeight: 56,
         title: const Text('뉴스레터'),
         centerTitle: true,
-        elevation: 0,
         leading: IconButton(
           icon: Image.asset('assets/icons/newsletter/bookmark_list.png'),
           onPressed: () {
@@ -268,7 +269,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
           children: [
             Container(
               width: width,
-              margin: const EdgeInsets.only(top: 16),
+              margin: const EdgeInsets.only(top: 16, bottom: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -299,23 +300,22 @@ class NewsletterListState extends State<NewsletterListScreen> {
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 itemCount: newsletterList.length,
                 itemBuilder: (context, index) {
                   final item = newsletterList[index];
-                  return InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, 'NewsletterDetailScreen');
-                      context.pushNamed('NewsletterDetailScreen',
-                          extra: jsonEncode(item));
-                    },
-                    child: Container(
-                      key: ValueKey(item.image),
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: borderColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+                  return Container(
+                    key: ValueKey(item.image),
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: borderColor),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        context.pushNamed('NewsletterDetailScreen',
+                            extra: jsonEncode(item));
+                      },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -356,6 +356,59 @@ class NewsletterListState extends State<NewsletterListScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Container(
+          //   margin: const EdgeInsets.only(top: 20),
+          //   decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.grey[400]!,
+          //         blurRadius: 2.0,
+          //       ),
+          //     ],
+          //   ),
+          //   child: IconButton(
+          //     style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+          //     icon: Image.asset('assets/icons/newsletter/scroll_up.png'),
+          //     onPressed: () {
+          //       // setState(() {
+          //       //   isBookmark = !isBookmark;
+          //       // });
+          //       scrollController.animateTo(0,
+          //           duration: Duration(milliseconds: 500),
+          //           curve: Curves.linear);
+          //     },
+          //   ),
+          // ),
+          Container(
+            margin: EdgeInsets.only(top: 16),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[400]!,
+                  blurRadius: 2.0,
+                ),
+              ],
+            ),
+            child: IconButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+              selectedIcon:
+                  Image.asset('assets/icons/newsletter/bookmark_enable.png'),
+              isSelected: isBookmark,
+              icon: Image.asset('assets/icons/newsletter/bookmark.png'),
+              onPressed: () {
+                setState(() {
+                  isBookmark = !isBookmark;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

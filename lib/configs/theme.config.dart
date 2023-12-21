@@ -8,6 +8,9 @@ var kColorScheme = ColorScheme.fromSeed(
   // secondaryContainer: Colors.amberAccent,
   error: const Color(0xFFE01839),
   onSurface: const Color(0xFFC4C6CD),
+  // background: Colors.yellow,
+  // onBackground: Colors.blue,
+  // surface: Colors.blue,
 );
 
 Color textHeaderColor = HexColor('#383B45');

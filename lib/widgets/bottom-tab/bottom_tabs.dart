@@ -18,18 +18,18 @@ class Tab {
 }
 
 final bottomButtons = [
-  Tab(
-    icon: Image.asset('assets/icons/bottom-bar/dr_post.png'),
-    iconActive: Image.asset('assets/icons/bottom-bar/doctor_active.png'),
-    text: 'Home',
-    path: '/',
-    // index: 0,
-  ),
+  // Tab(
+  //   icon: Image.asset('assets/icons/bottom-bar/dr_post.png'),
+  //   iconActive: Image.asset('assets/icons/bottom-bar/doctor_active.png'),
+  //   text: 'Home',
+  //   path: '/',
+  //   // index: 0,
+  // ),
   Tab(
     icon: Image.asset('assets/icons/bottom-bar/newsletter.png'),
     iconActive: Image.asset('assets/icons/bottom-bar/newsletter_active.png'),
     text: 'Newsletter',
-    path: '/signup',
+    path: '/newsletter',
   ),
   // Tab(
   //   icon: Image.asset('assets/icons/bottom-bar/diary.png'),
@@ -72,6 +72,7 @@ class BottomTabs extends StatelessWidget {
           top: BorderSide(width: 1, color: Color.fromARGB(255, 169, 197, 211)),
         ),
       ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       child: Row(
         children: [
           ...[

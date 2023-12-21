@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_mildang/apis/api.dart';
 import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/my_material.dart';
-import 'package:flutter_mildang/provider/authen_model.dart';
-import 'package:flutter_mildang/provider/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/provider/change_notifier_provider.dart';
+import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:provider/provider.dart';
+
 // import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -30,10 +32,13 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ChangeNotifierModel()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(
             create: (context) =>
-                AuthenModel(isLoggedIn, tokenModel?.accessToken)),
+                AuthenProvider(isLoggedIn, tokenModel?.accessToken)),
+        ChangeNotifierProvider(
+          create: (context) => NewsletterBookmarkProvider(),
+        ),
       ],
       child: const MyMaterial(),
     ),

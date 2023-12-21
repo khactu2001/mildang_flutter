@@ -2,22 +2,10 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
-// import 'package:flutter_mildang/apis/newsletter.api.dart';
-import 'package:flutter_mildang/model/newsletter_list_model.dart';
-import 'package:flutter_mildang/widgets/dropdown-menu/dropdown_menu_custom.dart';
+import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
 import 'package:go_router/go_router.dart';
-
-// class NewsletterListScreen extends StatelessWidget {
-//   const NewsletterListScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Text('Newsletter List');
-//   }
-// }
+import 'package:provider/provider.dart';
 
 class Category {
   Category({
@@ -47,8 +35,8 @@ class NewsletterBookmarkScreen extends StatefulWidget {
 }
 
 class NewsletterListState extends State<NewsletterBookmarkScreen> {
-  // late Future<DataPagingList?> newsletterList;
-  late List<NewsItems> newsletterList = [];
+  // final NewsletterBookmarkModel dataProvider = NewsletterBookmarkModel();
+  // late List<NewsItems> newsletterList = [];
   int currentPage = 1;
   final int limit = 20;
   int total = 0;
@@ -58,7 +46,6 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // getNewsletterDetail(13094);
     fetchData({
       'page': currentPage,
       'limit': limit,
@@ -101,16 +88,31 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
   }
 
   Future fetchData(Map<String, dynamic> params) async {
-    DataPagingList? dataPagingList = await getNewsletters(params: params);
-    total = dataPagingList?.paging?.total ?? 0;
-    totalPage = dataPagingList?.paging?.totalPage ?? 0;
-    if (dataPagingList == null) return;
-    setState(() {
-      if (currentPage == 1) {
-        newsletterList = [];
-      }
-      newsletterList.addAll(dataPagingList.items ?? []);
-    });
+    // DataPagingBookmark? dataPagingList =
+    //     await getNewsletterBookmarks(params: params);
+    // DataPagingBookmark? dataPagingList =
+    // await dataProvider.providerGetListBookmarks(params);
+    // Future.delayed(const Duration(seconds: 3), () async {
+    //   print('aksjhdfkhjasdf');
+    //   await dataProvider.providerGetListBookmarks(params);
+    //   // setState(() {
+    //   //   currentPage += 1;
+    //   // });
+    // });
+    await Provider.of<NewsletterBookmarkProvider>(context, listen: false)
+        .providerGetListBookmarks(params);
+
+    // total = dataPagingList?.paging?.total ?? 0;
+    // totalPage = dataPagingList?.paging?.totalPage ?? 0;
+    // if (dataPagingList == null) return;
+    // setState(() {
+    //   if (currentPage == 1) {
+    //     newsletterList = [];
+    //   }
+    //   newsletterList.addAll(dataPagingList.items ?? []);
+    //   Provider.of<NewsletterBookmarkProvider>(context, listen: false)
+    //       .concatNewsBookmarks(dataPagingList.items ?? []);
+    // });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -213,81 +215,100 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
           },
         ),
         actions: [
-          IconButton(
-            icon: Image.asset('assets/icons/newsletter/filter.png'),
-            onPressed: _openBottomModal,
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: Image.asset('assets/icons/newsletter/filter.png'),
+              onPressed: _openBottomModal,
+            ),
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                  controller: _scrollController,
-                  addAutomaticKeepAlives: true,
-                  padding: const EdgeInsets.all(0),
-                  itemCount: newsletterList.isEmpty ? 0 : newsletterList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: ratio,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (newsletterList.isEmpty) return null;
-                    final item = newsletterList[index];
-                    return InkWell(
-                      onTap: () {
-                        context.pushNamed('NewsletterDetailScreen',
-                            extra: jsonEncode(item));
-                      },
-                      child: Container(
-                        key: ValueKey(item.image),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: borderColor),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (item.image != null)
-                              ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: item.image ?? '',
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(
-                                    strokeWidth: 1,
-                                  ),
-                                  height: itemHeight * 113 / 209,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              child: Text(item.title ?? '',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                        fontSize: 20,
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                            ),
-                          ],
-                        ),
+        child: Consumer<NewsletterBookmarkProvider>(
+          builder: (context, value, child) {
+            final newsletterList = value.bookmarks;
+            // print(newsletterList);
+            // print(dataProvider.count);
+            // print(value.count);
+
+            return Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                      controller: _scrollController,
+                      addAutomaticKeepAlives: true,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      itemCount:
+                          newsletterList.isEmpty ? 0 : newsletterList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: ratio,
                       ),
-                    );
-                  }),
-            ),
-          ],
+                      itemBuilder: (context, index) {
+                        if (newsletterList.isEmpty) return null;
+                        final item = newsletterList[index];
+                        return InkWell(
+                          onTap: () {
+                            context.pushNamed('NewsletterDetailScreen',
+                                extra: jsonEncode(item));
+                          },
+                          child: Container(
+                            key: ValueKey(item.image),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: borderColor),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (item.image != null)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(8),
+                                      topRight: Radius.circular(8),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.image ?? '',
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                      ),
+                                      height: itemHeight * 113 / 209,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  child: Text('${item.id}${item.title}',
+                                      // child: Text(
+                                      //     '"This is a long text""This is a long text""This is a long text"',
+                                      maxLines: 2,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontSize: 20,
+                                            overflow: TextOverflow.ellipsis,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                          )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

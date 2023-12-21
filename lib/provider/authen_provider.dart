@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class AuthenModel extends ChangeNotifier {
+class AuthenProvider extends ChangeNotifier {
   bool _isAuthenticated = false;
   String? _token;
 
-  AuthenModel(this._isAuthenticated, this._token);
+  AuthenProvider(this._isAuthenticated, this._token);
 
   void setAuthenticated(bool isAuthenticated) {
     _isAuthenticated = isAuthenticated;

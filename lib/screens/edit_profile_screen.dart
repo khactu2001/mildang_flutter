@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
 // import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/model/login_model.dart';
-import 'package:flutter_mildang/provider/change_notifier_model.dart';
+import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/common_textfield_stateful.dart';
 import 'package:flutter_mildang/widgets/textfields/dob_textfield.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -81,14 +83,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
 
       if (mounted) {
-        UserModel user =
-            Provider.of<ChangeNotifierModel>(context, listen: false)
-                .getUserProvider()!;
+        UserModel user = Provider.of<UserProvider>(context, listen: false)
+            .getUserProvider()!;
         user.nickname = usernameController.text;
         user.email = emailController.text;
 
         // standalone call function without needing data
-        Provider.of<ChangeNotifierModel>(context).updateUserProvider(user);
+        Provider.of<UserProvider>(context).updateUserProvider(user);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -117,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _initValueAfterMounted() {
     if (mounted) {
       final userProvider =
-          Provider.of<ChangeNotifierModel>(context, listen: false).userProvider;
+          Provider.of<UserProvider>(context, listen: false).userProvider;
 
       usernameController.text = userProvider?.nickname ?? '';
       emailController.text = userProvider?.email ?? '';
@@ -356,8 +357,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       TextFieldDOB(
                         dob: convertStringToFormattedDateTime(
-                            Provider.of<ChangeNotifierModel>(context,
-                                        listen: false)
+                            Provider.of<UserProvider>(context, listen: false)
                                     .userProvider
                                     ?.birthday ??
                                 ""),
@@ -412,6 +412,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ],
                       ),
+
+                      ElevatedButton(
+                          onPressed: () async {
+                            // await removeLocalVariable(LocalKeyCustom.user);
+                            await removeLocalVariable(LocalKeyCustom.token);
+
+                            if (!context.mounted) return;
+                            Provider.of<AuthenProvider>(context, listen: false)
+                                .setAuthenticated(false);
+                            // context.goNamed('LoginScreen');
+                          },
+                          child: Text('Logout'))
                     ],
                   ),
                 ],
