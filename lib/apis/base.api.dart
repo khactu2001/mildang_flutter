@@ -7,8 +7,10 @@ import 'package:flutter_mildang/apis/api.dart';
 import 'package:flutter_mildang/model/newsletter_detail_model.dart';
 import 'package:flutter_mildang/my_material.dart';
 import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 // import 'package:flutter_mildang/provider/authen_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 // import 'package:http/http.dart';
 
@@ -59,9 +61,10 @@ class BaseAPI {
     Map<String, dynamic>? params,
     Map<String, dynamic>? body,
   }) async {
-    final String paramsString = params != null ? encodeParams(params) : '';
+    final String paramsString =
+        params != null ? '?${encodeParams(params)}' : '';
 
-    final urlEndpoint = Uri.parse("$baseUrl/$url?$paramsString");
+    final urlEndpoint = Uri.parse("$baseUrl/$url$paramsString");
 
     http.Request request = http.Request(method, urlEndpoint);
     if (body != null) {
@@ -69,6 +72,7 @@ class BaseAPI {
     }
     try {
       request.headers['accept'] = '*/*';
+      request.headers['Content-Type'] = 'application/json';
       final token = await getHeader();
       if (token != null) {
         request.headers['Authorization'] = 'Bearer $token';
@@ -95,17 +99,16 @@ void errorHandlerApi(dynamic error) async {
   switch (error.message) {
     case 401:
       print('Unauthorized');
-      // await removeLocalVariable(LocalKeyCustom.user);
-      // await removeLocalVariable(LocalKeyCustom.token);
-      // Provider.of<AuthenModel>(context, listen: false)
-      //     .setAuthenticated(false);
-      // AuthenProvider(false, null).setAuthenticated(false);
-      print('navigate to login screen');
-    // if(globalContext){
 
-    // }
-    // navigatorKey.currentState?.pushNamed('LoginScreen');
-    // context.goNamed('LoginScreen');
+      if (navigatorKey.currentState != null) {
+        Provider.of<AuthenProvider>(navigatorKey.currentState!.context,
+                listen: false)
+            .setAuthenticated(false);
+        await removeLocalVariable(LocalKeyCustom.user);
+        await removeLocalVariable(LocalKeyCustom.token);
+        // navigatorKey.currentState?.pushNamed('LoginScreen');
+      }
+      print('navigate to login screen');
   }
 }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
+import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsletterDetailScreen extends StatefulWidget {
@@ -12,17 +15,26 @@ class NewsletterDetailScreen extends StatefulWidget {
 }
 
 class NewsletterDetailState extends State<NewsletterDetailScreen> {
-  late bool isBookmark;
+  bool isBookmark = false;
   final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    isBookmark = widget.newsItems.isBookmark ?? false;
+    // isBookmark = widget.newsItems.isBookmark ?? false;
+    fetchDetailNewsletter();
+  }
+
+  void fetchDetailNewsletter() async {
+    final detail = await getNewsletterDetail(widget.newsItems.id!);
+    setState(() {
+      isBookmark = detail?.isBookMark ?? false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    print('isBookmark $isBookmark');
     final controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
@@ -126,6 +138,16 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
               isSelected: isBookmark,
               icon: Image.asset('assets/icons/newsletter/bookmark.png'),
               onPressed: () {
+                if (!isBookmark) {
+                  // add
+                  Provider.of<NewsletterBookmarkProvider>(context,
+                          listen: false)
+                      .addNewsBookmark(widget.newsItems);
+                } else {
+                  Provider.of<NewsletterBookmarkProvider>(context,
+                          listen: false)
+                      .removeNewsBookmark(widget.newsItems.id!);
+                }
                 setState(() {
                   isBookmark = !isBookmark;
                 });

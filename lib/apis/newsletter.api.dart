@@ -8,6 +8,7 @@ import 'dart:convert' as convert;
 
 const String path = 'newsletter';
 const String pathBookmark = 'newsletter/bookmarks';
+const String pathToggleBookmark = 'newsletter/bookmark';
 BaseAPI api = BaseAPI();
 
 Future<Data?> getNewsletterDetail(int id) async {
@@ -55,4 +56,14 @@ Future<DataPagingBookmark?> getNewsletterBookmarks(
   }
 }
 
-Future<void> addNewsBookmark(NewsItems newsItem) async {}
+Future<void> addNewsBookmarkApi(int id) async {
+  await api.baseRequestWithToken('POST', '$pathToggleBookmark/$id', body: {
+    'status': true,
+  });
+}
+
+Future<void> removeNewsBookmarkApi(int id) async {
+  await api.baseRequestWithToken('POST', '$pathToggleBookmark/$id', body: {
+    'status': false,
+  });
+}

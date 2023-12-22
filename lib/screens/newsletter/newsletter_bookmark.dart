@@ -35,8 +35,6 @@ class NewsletterBookmarkScreen extends StatefulWidget {
 }
 
 class NewsletterListState extends State<NewsletterBookmarkScreen> {
-  // final NewsletterBookmarkModel dataProvider = NewsletterBookmarkModel();
-  // late List<NewsItems> newsletterList = [];
   int currentPage = 1;
   final int limit = 20;
   int total = 0;
@@ -198,7 +196,6 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final width = MediaQuery.of(context).size.width;
     final itemWidth = MediaQuery.of(context).size.width / 2 - 6;
     const ratio = 170 / 209;
     final itemHeight = itemWidth / ratio;
@@ -228,10 +225,9 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Consumer<NewsletterBookmarkProvider>(
           builder: (context, value, child) {
-            final newsletterList = value.bookmarks;
-            // print(newsletterList);
-            // print(dataProvider.count);
-            // print(value.count);
+            // final newsletterList = value.bookmarks;
+            final data = value.dataPagingBookmark;
+            final items = data.items ?? [];
 
             return Column(
               children: [
@@ -240,8 +236,7 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
                       controller: _scrollController,
                       addAutomaticKeepAlives: true,
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      itemCount:
-                          newsletterList.isEmpty ? 0 : newsletterList.length,
+                      itemCount: items.isEmpty ? 0 : items.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -250,8 +245,8 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
                         childAspectRatio: ratio,
                       ),
                       itemBuilder: (context, index) {
-                        if (newsletterList.isEmpty) return null;
-                        final item = newsletterList[index];
+                        if (items.isEmpty) return null;
+                        final item = items[index];
                         return InkWell(
                           onTap: () {
                             context.pushNamed('NewsletterDetailScreen',
@@ -287,8 +282,6 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 12, horizontal: 16),
                                   child: Text('${item.id}${item.title}',
-                                      // child: Text(
-                                      //     '"This is a long text""This is a long text""This is a long text"',
                                       maxLines: 2,
                                       style: Theme.of(context)
                                           .textTheme

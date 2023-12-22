@@ -415,15 +415,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                       ElevatedButton(
                           onPressed: () async {
-                            // await removeLocalVariable(LocalKeyCustom.user);
+                            await removeLocalVariable(LocalKeyCustom.user);
                             await removeLocalVariable(LocalKeyCustom.token);
 
                             if (!context.mounted) return;
                             Provider.of<AuthenProvider>(context, listen: false)
                                 .setAuthenticated(false);
-                            // context.goNamed('LoginScreen');
+                            context.goNamed('LoginScreen');
                           },
-                          child: Text('Logout'))
+                          child: const Text('Logout'))
                     ],
                   ),
                 ],

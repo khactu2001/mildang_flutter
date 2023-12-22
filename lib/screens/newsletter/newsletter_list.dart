@@ -360,32 +360,8 @@ class NewsletterListState extends State<NewsletterListScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // Container(
-          //   margin: const EdgeInsets.only(top: 20),
-          //   decoration: BoxDecoration(
-          //     shape: BoxShape.circle,
-          //     boxShadow: [
-          //       BoxShadow(
-          //         color: Colors.grey[400]!,
-          //         blurRadius: 2.0,
-          //       ),
-          //     ],
-          //   ),
-          //   child: IconButton(
-          //     style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-          //     icon: Image.asset('assets/icons/newsletter/scroll_up.png'),
-          //     onPressed: () {
-          //       // setState(() {
-          //       //   isBookmark = !isBookmark;
-          //       // });
-          //       scrollController.animateTo(0,
-          //           duration: Duration(milliseconds: 500),
-          //           curve: Curves.linear);
-          //     },
-          //   ),
-          // ),
           Container(
-            margin: EdgeInsets.only(top: 16),
+            margin: const EdgeInsets.only(top: 20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               boxShadow: [
@@ -397,14 +373,14 @@ class NewsletterListState extends State<NewsletterListScreen> {
             ),
             child: IconButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-              selectedIcon:
-                  Image.asset('assets/icons/newsletter/bookmark_enable.png'),
-              isSelected: isBookmark,
-              icon: Image.asset('assets/icons/newsletter/bookmark.png'),
+              icon: Image.asset('assets/icons/newsletter/scroll_up.png'),
               onPressed: () {
-                setState(() {
-                  isBookmark = !isBookmark;
-                });
+                // setState(() {
+                //   isBookmark = !isBookmark;
+                // });
+                // scrollController.animateTo(0,
+                //     duration: Duration(milliseconds: 500),
+                //     curve: Curves.linear);
               },
             ),
           ),
