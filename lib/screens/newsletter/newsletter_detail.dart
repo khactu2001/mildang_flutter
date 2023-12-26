@@ -180,7 +180,7 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
                           // add
                           Provider.of<NewsletterBookmarkProvider>(context,
                                   listen: false)
-                              .addNewsBookmark(bookmarkItem as NewsGenericType);
+                              .addNewsBookmark(bookmarkItem);
                         } else {
                           Provider.of<NewsletterBookmarkProvider>(context,
                                   listen: false)

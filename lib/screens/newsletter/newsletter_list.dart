@@ -377,9 +377,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
                         // context.pushNamed('NewsletterDetailScreen',
                         //     extra: jsonEncode(item));
                         print('onTapp-------------');
-                        Get.toNamed('/news-detail/${item.id}', parameters: {
-                          'id': item.id.toString(),
-                        });
+                        Get.toNamed('/news-detail/${item.id}');
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

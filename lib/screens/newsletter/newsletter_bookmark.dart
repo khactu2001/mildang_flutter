@@ -87,31 +87,8 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
   }
 
   Future fetchData(Map<String, dynamic> params) async {
-    // DataPagingBookmark? dataPagingList =
-    //     await getNewsletterBookmarks(params: params);
-    // DataPagingBookmark? dataPagingList =
-    // await dataProvider.providerGetListBookmarks(params);
-    // Future.delayed(const Duration(seconds: 3), () async {
-    //   print('aksjhdfkhjasdf');
-    //   await dataProvider.providerGetListBookmarks(params);
-    //   // setState(() {
-    //   //   currentPage += 1;
-    //   // });
-    // });
     await Provider.of<NewsletterBookmarkProvider>(context, listen: false)
         .providerGetListBookmarks(params);
-
-    // total = dataPagingList?.paging?.total ?? 0;
-    // totalPage = dataPagingList?.paging?.totalPage ?? 0;
-    // if (dataPagingList == null) return;
-    // setState(() {
-    //   if (currentPage == 1) {
-    //     newsletterList = [];
-    //   }
-    //   newsletterList.addAll(dataPagingList.items ?? []);
-    //   Provider.of<NewsletterBookmarkProvider>(context, listen: false)
-    //       .concatNewsBookmarks(dataPagingList.items ?? []);
-    // });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -227,7 +204,6 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Consumer<NewsletterBookmarkProvider>(
           builder: (context, value, child) {
-            // final newsletterList = value.bookmarks;
             final data = value.dataPagingBookmark;
             final items = data.items ?? [];
 
@@ -251,8 +227,7 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
                         final item = items[index];
                         return InkWell(
                           onTap: () {
-                            context.pushNamed('NewsletterDetailScreen',
-                                extra: jsonEncode(item));
+                            Get.toNamed('/news-detail/${item.id}');
                           },
                           child: Container(
                             key: ValueKey(item.image),

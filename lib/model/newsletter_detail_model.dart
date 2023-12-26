@@ -1,5 +1,3 @@
-import 'package:flutter_mildang/model/newsletter_bookmark_item_model.dart';
-
 class NewsDetailModel {
   bool? status;
   String? message;
@@ -158,10 +156,6 @@ class NewsDetail {
     data['unlikeCount'] = this.unlikeCount;
     return data;
   }
-
-  // NewsBookmarkItemModel toBookmarkItemModel(){
-  //   return
-  // }
 }
 
 class Categories {
