@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/api.dart';
+import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/provider/authen_provider.dart';
 import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/custom_textfield.dart';
 import 'package:flutter_mildang/model/login_model.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
         await getLocalVariable(LocalKeyCustom.token);
     final Map<String, dynamic>? userCheck =
         await getLocalVariable(LocalKeyCustom.user);
-    print('user loaded from local: $userCheck');
     if (userCheck == null || token == null) {
       return;
     }
@@ -168,7 +169,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Provider.of<AuthenProvider>(context, listen: false)
           .setAuthenticated(true);
-      context.goNamed('HomeScreen');
+      final Controller c = Get.find();
+      // c.setIsAuthen(true);
+      // context.goNamed('HomeScreen');
+      Future.delayed(const Duration(milliseconds: 300), () {
+        Get.offNamed('/Home');
+        print('-----navigate-----');
+      });
     }).catchError((onError) {
       print('Data error: $onError');
       setState(() {
@@ -177,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }).whenComplete(() {
       Navigator.pop(context);
+      print('finished');
     });
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {

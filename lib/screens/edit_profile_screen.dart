@@ -11,10 +11,10 @@ import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/textfields/common_textfield_stateful.dart';
 import 'package:flutter_mildang/widgets/textfields/dob_textfield.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -414,16 +414,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
 
                       ElevatedButton(
+                        onPressed: () async {
+                          await removeLocalVariable(LocalKeyCustom.user);
+                          await removeLocalVariable(LocalKeyCustom.token);
+
+                          if (!context.mounted) return;
+                          Provider.of<AuthenProvider>(context, listen: false)
+                              .setAuthenticated(false);
+                          // context.goNamed('LoginScreen');
+                          Get.offAllNamed('/Login');
+                        },
+                        child: const Text('Logout'),
+                      ),
+                      ElevatedButton(
                           onPressed: () async {
                             await removeLocalVariable(LocalKeyCustom.user);
                             await removeLocalVariable(LocalKeyCustom.token);
 
-                            if (!context.mounted) return;
-                            Provider.of<AuthenProvider>(context, listen: false)
-                                .setAuthenticated(false);
-                            context.goNamed('LoginScreen');
+                            // if (!context.mounted) return;
+                            // Provider.of<AuthenProvider>(context, listen: false)
+                            //     .setAuthenticated(false);
+                            // context.goNamed('LoginScreen');
                           },
-                          child: const Text('Logout'))
+                          child: const Text('test base api'))
                     ],
                   ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:flutter_mildang/model/newsletter_bookmark_item_model.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
 
 class NewsletterBookmarksResponse {
@@ -27,16 +28,16 @@ class NewsletterBookmarksResponse {
 }
 
 class DataPagingBookmark {
-  List<NewsItems>? items;
+  List<NewsBookmarkItemModel>? items;
   Paging? paging;
 
   DataPagingBookmark({this.items, this.paging});
 
   DataPagingBookmark.fromJson(Map<String, dynamic> json) {
     if (json['items'] != null) {
-      items = <NewsItems>[];
+      items = <NewsBookmarkItemModel>[];
       json['items'].forEach((v) {
-        items!.add(new NewsItems.fromJson(v));
+        items!.add(new NewsBookmarkItemModel.fromJson(v));
       });
     }
     paging =
@@ -53,4 +54,33 @@ class DataPagingBookmark {
     }
     return data;
   }
+}
+
+class DataPagingBookmarkGeneric<T> {
+  List<T>? items;
+  Paging? paging;
+
+  DataPagingBookmarkGeneric({this.items, this.paging});
+
+  // DataPagingBookmarkGeneric.fromJson(Map<String, dynamic> json) {
+  //   if (json['items'] != null) {
+  //     items = <T>[];
+  //     json['items'].forEach((v) {
+  //       items!.add(new T.fromJson(v));
+  //     });
+  //   }
+  //   paging =
+  //       json['paging'] != null ? new Paging.fromJson(json['paging']) : null;
+  // }
+
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = new Map<String, dynamic>();
+  //   if (this.items != null) {
+  //     data['items'] = this.items!.map((v) => v.toJson()).toList();
+  //   }
+  //   if (this.paging != null) {
+  //     data['paging'] = this.paging!.toJson();
+  //   }
+  //   return data;
+  // }
 }

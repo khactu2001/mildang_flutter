@@ -2,13 +2,20 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/apis/category.api.dart';
 import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
+import 'package:flutter_mildang/main.dart';
+import 'package:flutter_mildang/model/category_model.dart';
 // import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
+import 'package:flutter_mildang/my_material.dart';
+import 'package:flutter_mildang/screens/detail_screen.dart';
+import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/dropdown-menu/dropdown_menu_custom.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:get/get.dart';
 // class NewsletterListScreen extends StatelessWidget {
 //   const NewsletterListScreen({super.key});
 
@@ -27,16 +34,16 @@ class Category {
   final String value;
 }
 
-final List<Category> categories = [
-  Category(label: 'cate 111111', value: '1'),
-  Category(label: 'cate 2', value: '2'),
-  Category(label: 'cate 3444444', value: '3'),
-  Category(label: 'cate 444', value: '4'),
-  Category(label: 'cate 544', value: '5'),
-  Category(label: 'cate 64', value: '6'),
-  Category(label: 'cate 7', value: '7'),
-  Category(label: 'cate 8098345983945', value: '8'),
-];
+// final List<Category> categories = [
+//   Category(label: 'cate 111111', value: '1'),
+//   Category(label: 'cate 2', value: '2'),
+//   Category(label: 'cate 3444444', value: '3'),
+//   Category(label: 'cate 444', value: '4'),
+//   Category(label: 'cate 544', value: '5'),
+//   Category(label: 'cate 64', value: '6'),
+//   Category(label: 'cate 7', value: '7'),
+//   Category(label: 'cate 8098345983945', value: '8'),
+// ];
 
 class NewsletterListScreen extends StatefulWidget {
   const NewsletterListScreen({super.key});
@@ -48,10 +55,13 @@ class NewsletterListScreen extends StatefulWidget {
 class NewsletterListState extends State<NewsletterListScreen> {
   // late Future<DataPagingList?> newsletterList;
   late List<NewsItems> newsletterList = [];
+  late List<CategoryItem> categories = [];
+  List<int> selectedCategoryIds = [2, 7, 8];
   int currentPage = 1;
   final int limit = 10;
   int total = 0;
   int totalPage = 0;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -62,6 +72,12 @@ class NewsletterListState extends State<NewsletterListScreen> {
       'page': currentPage,
       'limit': limit,
     });
+    initCategories();
+  }
+
+  void initCategories() async {
+    final CategoryModel? categoriesFetched = await getCategories();
+    categories = categoriesFetched?.data ?? [];
   }
 
   void _loadMore() {
@@ -112,13 +128,12 @@ class NewsletterListState extends State<NewsletterListScreen> {
     });
   }
 
-  final ScrollController _scrollController = ScrollController();
-
   void _openBottomModal() {
     showDialog(
         context: context,
         builder: (context) {
-          return LayoutBuilder(builder: ((context, constraints) {
+          return StatefulBuilder(
+              builder: ((BuildContext context, StateSetter setState) {
             return SizedBox(
                 height: MediaQuery.of(context).size.height / 2,
                 child: Column(children: [
@@ -141,60 +156,82 @@ class NewsletterListState extends State<NewsletterListScreen> {
                           runSpacing: 16,
                           spacing: 12,
                           children: categories.map((category) {
-                            return OutlinedButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 10,
+                            if (selectedCategoryIds.contains(category.id)) {
+                              return SizedBox(
+                                // width:,
+                                height: 54,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                      horizontal: 10,
+                                    ),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                      side: BorderSide.none,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    final removedList = selectedCategoryIds;
+                                    removedList.remove(category.id);
+
+                                    setState(() {
+                                      selectedCategoryIds = removedList;
+                                    });
+                                  },
+                                  child: Text(
+                                    category.name ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
                                 ),
-                                backgroundColor: categoryUnselectedColor,
-                                side: BorderSide(
-                                  width: 1,
-                                  color: categoryUnselectedBorderColor,
+                              );
+                            }
+                            return SizedBox(
+                              height: 54,
+                              child: OutlinedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 10,
+                                  ),
+                                  backgroundColor: categoryUnselectedColor,
+                                  side: BorderSide(
+                                    width: 1,
+                                    color: categoryUnselectedBorderColor,
+                                  ),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(12),
+                                    ),
+                                  ),
                                 ),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(12),
+                                onPressed: () {
+                                  final addedList = selectedCategoryIds;
+                                  addedList.add(category.id!);
+
+                                  setState(() {
+                                    selectedCategoryIds = addedList;
+                                  });
+                                },
+                                child: Text(
+                                  category.name ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
-                              onPressed: () {},
-                              child: Text(
-                                category.label,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
                             );
-                            // return Container(
-                            //   decoration: BoxDecoration(
-                            //     border: Border.all(
-                            //         color:
-                            //             categoryUnselectedBorderColor),
-                            //     borderRadius:
-                            //         BorderRadius.all(
-                            //             Radius.circular(8)),
-                            //   ),
-                            //   child: TextButton(
-                            //       onPressed: () {},
-                            //       child: Text(
-                            //         category.label,
-                            //         style: const TextStyle(
-                            //           color: Colors.black,
-                            //         ),
-                            //       )),
-                            // );
                           }).toList(),
                         ),
                       ),
-                      // ListView.builder(itemBuilder: (context, constraints) {
-                      //   return ElevatedButton(
-                      //       onPressed: () {},
-                      //       child: Text(category.label),
-                      //     )
-                      // }),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -206,6 +243,24 @@ class NewsletterListState extends State<NewsletterListScreen> {
                           ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
+                                Map<String, dynamic> filters = {
+                                  'categoryIds': {}
+                                };
+                                // for (var item in selectedCategoryIds) {
+                                //   // filters['categoryIds'][]
+                                //   print(item);
+                                // }
+                                for (var i = 0;
+                                    i < selectedCategoryIds.length;
+                                    i++) {
+                                  filters['categoryIds'][i] =
+                                      selectedCategoryIds[i];
+                                }
+
+                                print(filters);
+
+                                // target
+                                // filters[categoryIds][0]=1 & filters[categoryIds][1]=1 &...
                               },
                               child: const Text('Ok')),
                         ],
@@ -221,28 +276,26 @@ class NewsletterListState extends State<NewsletterListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return ListView.builder(itemBuilder: ((context, index) {
-    //   final newsletterItem = newsletterList[index];
-    //   return Container(
-    //     decoration: BoxDecoration(
-    //         border: Border.all(),
-    //         borderRadius: const BorderRadius.all(Radius.circular(8))),
-    //     child: Text('${newsletterItem.title}'),
-    //   );
-    // }));
-    // return FutureBuilder(future: newsletterList, builder: (context, snapshot){
-    //   if (snapshot.connectionState == ConnectionState.waiting) {
-    //         return Center(child: CircularProgressIndicator());
-    //       } else if (snapshot.hasError) {
-    //         return Center(child: Text('Error: ${snapshot.error}'));
-    //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-    //         return Center(child: Text('No data available'));
-    //       } else {
-
-    //       }
-    // })
-
     final width = MediaQuery.of(context).size.width;
+
+    Map<String, dynamic> filters = {'categoryIds': {}};
+    List<String> filterStringList = [];
+    // for (var item in selectedCategoryIds) {
+    //   // filters['categoryIds'][]
+    //   print(item);
+    // }
+    for (var i = 0; i < selectedCategoryIds.length; i++) {
+      filters['categoryIds'][i] = selectedCategoryIds[i];
+      filterStringList
+          .add('filters[categoryIds][$i]=${selectedCategoryIds[i]}');
+    }
+
+    print(filters);
+    print(filterStringList.join('&'));
+
+    // target
+    // filters[categoryIds][0]=1 & filters[categoryIds][1]=1 &...
+    final Controller c = Get.find();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 56,
@@ -251,14 +304,21 @@ class NewsletterListState extends State<NewsletterListScreen> {
         leading: IconButton(
           icon: Image.asset('assets/icons/newsletter/bookmark_list.png'),
           onPressed: () {
-            context.pushNamed('NewsletterBookmarkScreen');
+            // context.pushNamed('NewsletterBookmarkScreen');
+            Get.toNamed('/news-bookmark');
           },
         ),
         actions: [
           IconButton(
             icon: Image.asset('assets/icons/newsletter/search.png'),
             onPressed: () {
-              context.pushNamed('NewsletterBookmarkScreen');
+              // context.pushNamed('NewsletterBookmarkScreen');
+              Get.toNamed('/news-detail');
+              // c.increment();
+              // Get.toNamed('/detail');
+
+              // Get.to(const LoginScreen());
+              // Get.toNamed('/news-detail', arguments: 'jkahsdfkljh');
             },
           ),
         ],
@@ -267,6 +327,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
+            Obx(() => Text("Clicks: ${c.count}")),
             Container(
               width: width,
               margin: const EdgeInsets.only(top: 16, bottom: 16),
@@ -313,8 +374,12 @@ class NewsletterListState extends State<NewsletterListScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        context.pushNamed('NewsletterDetailScreen',
-                            extra: jsonEncode(item));
+                        // context.pushNamed('NewsletterDetailScreen',
+                        //     extra: jsonEncode(item));
+                        print('onTapp-------------');
+                        Get.toNamed('/news-detail/${item.id}', parameters: {
+                          'id': item.id.toString(),
+                        });
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,9 +440,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
               icon: Image.asset('assets/icons/newsletter/scroll_up.png'),
               onPressed: () {
-                // setState(() {
-                //   isBookmark = !isBookmark;
-                // });
                 // scrollController.animateTo(0,
                 //     duration: Duration(milliseconds: 500),
                 //     curve: Curves.linear);

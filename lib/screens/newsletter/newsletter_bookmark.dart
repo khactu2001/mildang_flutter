@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
 import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -208,7 +209,8 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () {
-            context.pop();
+            // context.pop();
+            Get.back();
           },
         ),
         actions: [

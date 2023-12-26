@@ -64,3 +64,12 @@ Future<bool> removeLocalVariable(LocalKeyCustom key) async {
   bool? isRemoved = await prefs.remove(key.toString());
   return isRemoved;
 }
+
+String serializeFilterParamsByCategoryIds(List<int> ids) {
+  List<String> filterStringList = [];
+  for (var i = 0; i < ids.length; i++) {
+    filterStringList.add('filters[categoryIds][$i]=${ids[i]}');
+  }
+  print(filterStringList.join('&'));
+  return filterStringList.join('&');
+}

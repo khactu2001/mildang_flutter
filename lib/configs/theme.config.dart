@@ -8,6 +8,7 @@ var kColorScheme = ColorScheme.fromSeed(
   // secondaryContainer: Colors.amberAccent,
   error: const Color(0xFFE01839),
   onSurface: const Color(0xFFC4C6CD),
+  primary: const Color(0xFF248BB0),
   // background: Colors.yellow,
   // onBackground: Colors.blue,
   // surface: Colors.blue,

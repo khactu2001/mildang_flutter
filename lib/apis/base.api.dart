@@ -4,19 +4,19 @@ import 'dart:convert';
 import 'dart:convert' as convert;
 
 import 'package:flutter_mildang/apis/api.dart';
+import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/model/newsletter_detail_model.dart';
 import 'package:flutter_mildang/my_material.dart';
 import 'package:flutter_mildang/provider/authen_provider.dart';
+import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
-// import 'package:flutter_mildang/provider/authen_model.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-// import 'package:http/http.dart';
-
 const String path = 'newsletter';
 
-Future<Data?> getNewsletterDetail(int id) async {
+Future<NewsDetail?> getNewsletterDetail(int id) async {
   var url = Uri.parse('$baseUrl/$path/$id');
   // final AuthenModel authen = AuthenModel().getAuthenticated;
   final String? token = await getHeader();
@@ -84,7 +84,11 @@ class BaseAPI {
       }
 
       final bodyResponse = await response.stream.bytesToString();
-      final decodedJSON = jsonDecode(bodyResponse) as Map<String, dynamic>;
+      final decodedJSON = jsonDecode(bodyResponse);
+
+      if (decodedJSON is List) {
+        return {'data': decodedJSON};
+      }
 
       return decodedJSON;
     } catch (e) {
@@ -96,18 +100,32 @@ class BaseAPI {
 }
 
 void errorHandlerApi(dynamic error) async {
-  switch (error.message) {
+  switch (error?.message) {
     case 401:
       print('Unauthorized');
 
-      if (navigatorKey.currentState != null) {
-        Provider.of<AuthenProvider>(navigatorKey.currentState!.context,
-                listen: false)
-            .setAuthenticated(false);
-        await removeLocalVariable(LocalKeyCustom.user);
-        await removeLocalVariable(LocalKeyCustom.token);
-        // navigatorKey.currentState?.pushNamed('LoginScreen');
-      }
+      // if (navigatorKey.currentState != null) {
+      //   // Provider.of<AuthenProvider>(navigatorKey.currentState!.context,
+      //   //         listen: false)
+      //   //     .setAuthenticated(false);
+      //   await removeLocalVariable(LocalKeyCustom.user);
+      //   await removeLocalVariable(LocalKeyCustom.token);
+      //   // navigatorKey.currentState?.pushNamed('LoginScreen');
+      //   final Controller c = Get.find();
+      //   c.setIsAuthen(false);
+      //   // Get.to(const LoginScreen());
+      // }
+      await removeLocalVariable(LocalKeyCustom.user);
+      await removeLocalVariable(LocalKeyCustom.token);
+      // navigatorKey.currentState?.pushNamed('LoginScreen');
+      final Controller c = Get.find();
+      // c.setIsAuthen(false);
+      // print(Get.currentRoute.toString());
+      // Get.toNamed('/Login');
+      Get.off(const LoginScreen());
+
+      // Get.toNamed('/public-routes');
+
       print('navigate to login screen');
   }
 }

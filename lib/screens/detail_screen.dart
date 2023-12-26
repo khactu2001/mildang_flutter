@@ -3,6 +3,7 @@ import 'package:flutter_mildang/model/login_model.dart';
 import 'package:flutter_mildang/provider/authen_provider.dart';
 import 'package:flutter_mildang/provider/change_notifier_provider.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -10,13 +11,14 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({
     super.key,
   });
-
   void logout(BuildContext context) {
     context.goNamed('SignupScreen');
   }
 
   @override
   Widget build(BuildContext context) {
+    print(Get.arguments);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),

@@ -1,14 +1,16 @@
+import 'package:flutter_mildang/model/newsletter_bookmark_item_model.dart';
+
 class NewsDetailModel {
   bool? status;
   String? message;
-  Data? data;
+  NewsDetail? data;
 
   NewsDetailModel({this.status, this.message, this.data});
 
   NewsDetailModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new NewsDetail.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,7 +24,7 @@ class NewsDetailModel {
   }
 }
 
-class Data {
+class NewsDetail {
   int? imageWidth;
   int? imageHeight;
   bool? isUnlike;
@@ -53,7 +55,7 @@ class Data {
   int? likeCount;
   int? unlikeCount;
 
-  Data(
+  NewsDetail(
       {this.imageWidth,
       this.imageHeight,
       this.isUnlike,
@@ -84,7 +86,7 @@ class Data {
       this.likeCount,
       this.unlikeCount});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  NewsDetail.fromJson(Map<String, dynamic> json) {
     imageWidth = json['imageWidth'];
     imageHeight = json['imageHeight'];
     isUnlike = json['isUnlike'];
@@ -156,6 +158,10 @@ class Data {
     data['unlikeCount'] = this.unlikeCount;
     return data;
   }
+
+  // NewsBookmarkItemModel toBookmarkItemModel(){
+  //   return
+  // }
 }
 
 class Categories {

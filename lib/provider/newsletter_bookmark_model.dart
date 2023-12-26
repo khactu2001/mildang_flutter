@@ -1,39 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/model/newsletter_bookmarks_model.dart';
-import 'package:flutter_mildang/model/newsletter_list_model.dart';
+
+abstract class Identifier {
+  int get id;
+}
+
+// abstract class Provider {
+//   List<T> get items;
+// }
+class NewsGenericType {
+  NewsGenericType(this.item);
+
+  NewsGenericType item;
+
+  // @override
+  int get id {
+    return item.id;
+  }
+
+  int getNumber() {
+    return 13;
+  }
+}
 
 class NewsletterBookmarkProvider extends ChangeNotifier {
-  // List<NewsItems> _newsBookmarks = [];
   DataPagingBookmark _dataPagingBookmark = DataPagingBookmark();
+  DataPagingBookmarkGeneric _dataPagingBookmarkGeneric =
+      DataPagingBookmarkGeneric();
+  // List<T> _list = [];
 
-  void updateBookmarks(List<NewsItems> bookmarks) {
-    // _newsBookmarks = bookmarks;
+  void updateBookmarks(List<NewsGenericType> bookmarks) {
+    // _list = bookmarks;
     notifyListeners();
   }
 
   void removeNewsBookmark(int id) {
-    // _newsBookmarks.removeWhere((item) => item.id == id);
-    _dataPagingBookmark.items?.removeWhere((item) => item.id == id);
+    // _dataPagingBookmark.items?.removeWhere((item) => item.id == id);
+    _dataPagingBookmarkGeneric.items?.removeWhere((item) => item.id == id);
     notifyListeners();
     removeNewsBookmarkApi(id);
+    // ----
+    // _list.removeWhere((item) => item.id == id);
   }
 
-  void addNewsBookmark(NewsItems newsItems) {
-    // _newsBookmarks.add(newsItems);
-    _dataPagingBookmark.items?.add(newsItems);
+  void addNewsBookmark(NewsGenericType newsItems) {
+    // _dataPagingBookmark.items?.add(newsItems);
+    // _dataPagingBookmarkGeneric.items?.add(newsItems);
     notifyListeners();
-    addNewsBookmarkApi(newsItems.id!);
+    // newsItems.
+    // NewsGenericType newsGenericType = NewsGenericType(newsItems);
+
+    print(newsItems.getNumber());
+
+    // addNewsBookmarkApi(item.get);
+    // _list.add(newsItems);
   }
 
-  void concatNewsBookmarks(List<NewsItems> newsBookmarks) {
-    // _newsBookmarks.addAll(newsBookmarks);
+  void concatNewsBookmarks(List<NewsGenericType> newsBookmarks) {
+    // _list.addAll(newsBookmarks);
     notifyListeners();
   }
-
-  // List<NewsItems> get bookmarks {
-  //   return _newsBookmarks;
-  // }
 
   DataPagingBookmark get dataPagingBookmark {
     return _dataPagingBookmark;
@@ -48,6 +75,9 @@ class NewsletterBookmarkProvider extends ChangeNotifier {
       // final itemsFetched = response?.items ?? [];
       // _newsBookmarks = itemsFetched;
       _dataPagingBookmark = response!;
+      _dataPagingBookmarkGeneric = DataPagingBookmarkGeneric(
+          items: response.items?.cast(), paging: response.paging);
+      updateBookmarks(response.items?.cast() ?? []);
       notifyListeners();
       return;
     }
@@ -62,6 +92,13 @@ class NewsletterBookmarkProvider extends ChangeNotifier {
     // _newsBookmarks.addAll(itemsFetched);
     _dataPagingBookmark.items!.addAll(itemsFetched);
     _dataPagingBookmark.paging = response!.paging;
+
+    _dataPagingBookmarkGeneric = DataPagingBookmarkGeneric(
+        items: response.items?.cast(), paging: response.paging);
+
+    concatNewsBookmarks(itemsFetched.cast());
+    //
+
     notifyListeners();
   }
 }

@@ -34,7 +34,6 @@ class MyScaffoldState extends State<MyScaffold> {
         await getLocalVariable(LocalKeyCustom.token);
     final Map<String, dynamic>? userCheck =
         await getLocalVariable(LocalKeyCustom.user);
-    print('user loaded from local: $userCheck');
     if (userCheck == null || token == null) {
       return;
     }

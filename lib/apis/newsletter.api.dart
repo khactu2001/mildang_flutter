@@ -11,7 +11,7 @@ const String pathBookmark = 'newsletter/bookmarks';
 const String pathToggleBookmark = 'newsletter/bookmark';
 BaseAPI api = BaseAPI();
 
-Future<Data?> getNewsletterDetail(int id) async {
+Future<NewsDetail?> getNewsletterDetail(int id) async {
   var url = Uri.parse('$baseUrl/$path/$id');
   // final AuthenModel authen = AuthenModel().getAuthenticated;
   final String? token = await getHeader();
