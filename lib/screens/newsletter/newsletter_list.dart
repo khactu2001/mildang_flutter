@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/category.api.dart';
@@ -7,23 +5,9 @@ import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
 import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/model/category_model.dart';
-// import 'package:flutter_mildang/apis/newsletter.api.dart';
 import 'package:flutter_mildang/model/newsletter_list_model.dart';
-import 'package:flutter_mildang/my_material.dart';
-import 'package:flutter_mildang/screens/detail_screen.dart';
-import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
-import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:flutter_mildang/widgets/dropdown-menu/dropdown_menu_custom.dart';
-import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
-// class NewsletterListScreen extends StatelessWidget {
-//   const NewsletterListScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Text('Newsletter List');
-//   }
-// }
 
 class Category {
   Category({
@@ -34,17 +18,6 @@ class Category {
   final String value;
 }
 
-// final List<Category> categories = [
-//   Category(label: 'cate 111111', value: '1'),
-//   Category(label: 'cate 2', value: '2'),
-//   Category(label: 'cate 3444444', value: '3'),
-//   Category(label: 'cate 444', value: '4'),
-//   Category(label: 'cate 544', value: '5'),
-//   Category(label: 'cate 64', value: '6'),
-//   Category(label: 'cate 7', value: '7'),
-//   Category(label: 'cate 8098345983945', value: '8'),
-// ];
-
 class NewsletterListScreen extends StatefulWidget {
   const NewsletterListScreen({super.key});
 
@@ -53,7 +26,6 @@ class NewsletterListScreen extends StatefulWidget {
 }
 
 class NewsletterListState extends State<NewsletterListScreen> {
-  // late Future<DataPagingList?> newsletterList;
   late List<NewsItems> newsletterList = [];
   late List<CategoryItem> categories = [];
   List<int> selectedCategoryIds = [2, 7, 8];
@@ -67,7 +39,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // getNewsletterDetail(13094);
     fetchData({
       'page': currentPage,
       'limit': limit,
@@ -280,10 +251,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
 
     Map<String, dynamic> filters = {'categoryIds': {}};
     List<String> filterStringList = [];
-    // for (var item in selectedCategoryIds) {
-    //   // filters['categoryIds'][]
-    //   print(item);
-    // }
     for (var i = 0; i < selectedCategoryIds.length; i++) {
       filters['categoryIds'][i] = selectedCategoryIds[i];
       filterStringList
@@ -304,7 +271,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
         leading: IconButton(
           icon: Image.asset('assets/icons/newsletter/bookmark_list.png'),
           onPressed: () {
-            // context.pushNamed('NewsletterBookmarkScreen');
             Get.toNamed('/news-bookmark');
           },
         ),
@@ -312,13 +278,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
           IconButton(
             icon: Image.asset('assets/icons/newsletter/search.png'),
             onPressed: () {
-              // context.pushNamed('NewsletterBookmarkScreen');
-              Get.toNamed('/news-detail');
-              // c.increment();
-              // Get.toNamed('/detail');
-
-              // Get.to(const LoginScreen());
-              // Get.toNamed('/news-detail', arguments: 'jkahsdfkljh');
+              c.increment();
             },
           ),
         ],
@@ -374,8 +334,6 @@ class NewsletterListState extends State<NewsletterListScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        // context.pushNamed('NewsletterDetailScreen',
-                        //     extra: jsonEncode(item));
                         print('onTapp-------------');
                         Get.toNamed('/news-detail/${item.id}');
                       },
@@ -438,9 +396,9 @@ class NewsletterListState extends State<NewsletterListScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
               icon: Image.asset('assets/icons/newsletter/scroll_up.png'),
               onPressed: () {
-                // scrollController.animateTo(0,
-                //     duration: Duration(milliseconds: 500),
-                //     curve: Curves.linear);
+                _scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.linear);
               },
             ),
           ),

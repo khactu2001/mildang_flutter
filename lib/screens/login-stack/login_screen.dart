@@ -163,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
         user = value.data.user;
         // errorMessage = 'call api failed';
       });
+      print('----user----${value.data.user.toJson()}');
 
       Provider.of<UserProvider>(context, listen: false)
           .updateUserProvider(value.data.user);

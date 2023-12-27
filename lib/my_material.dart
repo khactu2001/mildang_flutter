@@ -1,14 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
 import 'package:flutter_mildang/main.dart';
-import 'package:flutter_mildang/model/newsletter_list_model.dart';
 import 'package:flutter_mildang/my_scaffold_tabs.dart';
-import 'package:flutter_mildang/provider/authen_provider.dart';
 import 'package:flutter_mildang/screens/detail_screen.dart';
 import 'package:flutter_mildang/screens/error_screen.dart';
-import 'package:flutter_mildang/screens/home_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
@@ -16,9 +11,8 @@ import 'package:flutter_mildang/screens/newsletter/newsletter_bookmark.dart';
 import 'package:flutter_mildang/screens/newsletter/newsletter_detail.dart';
 import 'package:flutter_mildang/screens/signup_screen.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 final theme = ThemeData().copyWith(
   appBarTheme: const AppBarTheme().copyWith(

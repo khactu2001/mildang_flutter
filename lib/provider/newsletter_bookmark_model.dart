@@ -19,9 +19,10 @@ class NewsletterBookmarkProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addNewsBookmark(dynamic newsItems) {
-    _dataPagingBookmark.items?.add(newsItems);
-    addNewsBookmarkApi(newsItems.id);
+  void addNewsBookmark(Map<String, dynamic> json) {
+    final newsItem = NewsBookmarkItemModel.fromJson(json);
+    _dataPagingBookmark.items?.add(newsItem);
+    addNewsBookmarkApi(newsItem.id!);
     notifyListeners();
   }
 

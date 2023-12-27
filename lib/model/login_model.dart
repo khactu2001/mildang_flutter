@@ -1,9 +1,10 @@
 // import 'dart:convert';
 
-import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-final formatter = DateFormat.yMd();
+part 'login_model.g.dart';
 
+@JsonSerializable(explicitToJson: true)
 class UserModel {
   UserModel({
     required this.id,
@@ -29,73 +30,12 @@ class UserModel {
   final String role;
   final int gender;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'nickname': String? nickname,
-        'phone': String phone,
-        'name': String? name,
-        'email': String email,
-        'snsId': String snsId,
-        'accType': String accType,
-        'role': String role,
-        'gender': int gender,
-        'birthday': String? birthday,
-      } =>
-        UserModel(
-          id: id,
-          nickname: nickname,
-          phone: phone,
-          name: name,
-          email: email,
-          snsId: snsId,
-          accType: accType,
-          role: role,
-          gender: gender,
-          birthday: birthday,
-        ),
-      _ => throw const FormatException('Failed to load user.'),
-    };
-  }
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nickname': nickname,
-      'phone': phone,
-      'name': name,
-      'email': email,
-      'snsId': snsId,
-      'accType': accType,
-      'role': role,
-      'gender': gender,
-      'birthday': birthday,
-    };
-  }
-
-  // String get formatDatetime {
-  //   if (birthday == null) {
-  //     return DateTime.now().toString();
-  //   }
-  //   return formatter.format(birthday!);
-  // }
-
-  copyClass<UserModel>() {
-    return {
-      'id': id,
-      'nickname': nickname,
-      'phone': phone,
-      'name': name,
-      'email': email,
-      'snsId': snsId,
-      'accType': accType,
-      'role': role,
-      'gender': gender,
-      'birthday': birthday,
-    };
-  }
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class TokenModel {
   const TokenModel({
     required this.refreshToken,
@@ -104,21 +44,13 @@ class TokenModel {
 
   final String refreshToken;
   final String accessToken;
-  factory TokenModel.fromJson(Map<String, dynamic> json) {
-    return TokenModel(
-      refreshToken: json['refreshToken'],
-      accessToken: json['accessToken'],
-    );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'refreshToken': refreshToken,
-      'accessToken': accessToken,
-    };
-  }
+  factory TokenModel.fromJson(Map<String, dynamic> json) =>
+      _$TokenModelFromJson(json);
+  Map<String, dynamic> toJson() => _$TokenModelToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class LoginResponseDataModel {
   const LoginResponseDataModel({
     required this.token,
@@ -127,14 +59,12 @@ class LoginResponseDataModel {
 
   final TokenModel token;
   final UserModel user;
-  factory LoginResponseDataModel.fromJson(Map<String, dynamic> json) {
-    return LoginResponseDataModel(
-      token: TokenModel.fromJson(json['token']),
-      user: UserModel.fromJson(json['user']),
-    );
-  }
+  factory LoginResponseDataModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseDataModelFromJson(json);
+  Map<String, dynamic> toJson() => _$LoginResponseDataModelToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class LoginResponseModel {
   const LoginResponseModel({
     required this.data,
@@ -146,25 +76,7 @@ class LoginResponseModel {
   final String message;
   final bool status;
 
-  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    return LoginResponseModel(
-      status: json["status"],
-      message: json['message'],
-      data: LoginResponseDataModel.fromJson(json['data']),
-    );
-  }
-}
-
-class UpdateProfileBodyModel {
-  UpdateProfileBodyModel({
-    this.nickname,
-  });
-
-  final String? nickname;
-
-  // String toString(Map<String, dynamic> json){
-  //   return jsonEncode({
-  //     'nickname': json['nickname'],
-  //   })
-  // }
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseModelFromJson(json);
+  Map<String, dynamic> toJson() => _$LoginResponseModelToJson(this);
 }

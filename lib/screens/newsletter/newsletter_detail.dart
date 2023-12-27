@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/apis/newsletter.api.dart';
-import 'package:flutter_mildang/model/newsletter_bookmark_item_model.dart';
 import 'package:flutter_mildang/model/newsletter_detail_model.dart';
 import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
 import 'package:get/get.dart';
@@ -10,9 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 class NewsletterDetailScreen extends StatefulWidget {
   const NewsletterDetailScreen({
     super.key,
-    // required this.newsItems,
   });
-  // final NewsItems newsItems;
 
   @override
   State<NewsletterDetailScreen> createState() => NewsletterDetailState();
@@ -21,13 +18,11 @@ class NewsletterDetailScreen extends StatefulWidget {
 class NewsletterDetailState extends State<NewsletterDetailScreen> {
   bool isBookmark = false;
   final ScrollController scrollController = ScrollController();
-  // late NewsDetail detail;
   late Future<NewsDetail> futureDetail;
 
   @override
   void initState() {
     super.initState();
-    // detail = fetchDetailNewsletter();
     futureDetail = fetchDetailNewsletter();
   }
 
@@ -36,16 +31,6 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
     super.dispose();
   }
 
-  // void fetchDetailNewsletter() async {
-  //   final detailResponse =
-  //       await getNewsletterDetail(int.parse(Get.parameters['id']!));
-  //   setState(() {
-  //     isBookmark = detailResponse?.isBookMark ?? false;
-  //     if (detailResponse != null) {
-  //       detail = detailResponse;
-  //     }
-  //   });
-  // }
   Future<NewsDetail> fetchDetailNewsletter() async {
     final detailResponse =
         await getNewsletterDetail(int.parse(Get.parameters['id']!));
@@ -53,12 +38,10 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
       isBookmark = detailResponse?.isBookMark ?? false;
     });
     if (detailResponse != null) {
-      // detail = detailResponse;
       return detailResponse;
     } else {
       throw Exception('Failed to fetch');
     }
-    // return null;
   }
 
   @override
@@ -175,12 +158,10 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
                         if (!isBookmark) {
                           final Map<String, dynamic> newsDetailMap =
                               detail.toJson();
-                          NewsBookmarkItemModel bookmarkItem =
-                              NewsBookmarkItemModel.fromJson(newsDetailMap);
                           // add
                           Provider.of<NewsletterBookmarkProvider>(context,
                                   listen: false)
-                              .addNewsBookmark(bookmarkItem);
+                              .addNewsBookmark(newsDetailMap);
                         } else {
                           Provider.of<NewsletterBookmarkProvider>(context,
                                   listen: false)
