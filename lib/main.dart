@@ -34,6 +34,7 @@ Future<void> main() async {
   if (userCheck != null && token != null) {
     isLoggedIn = true;
     tokenModel = TokenModel.fromJson(token);
+    // print(tokenModel.toJson());
     c.setIsAuthen(true);
   }
 

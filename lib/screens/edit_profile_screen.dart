@@ -417,26 +417,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () async {
                           await removeLocalVariable(LocalKeyCustom.user);
                           await removeLocalVariable(LocalKeyCustom.token);
-
-                          if (!context.mounted) return;
-                          Provider.of<AuthenProvider>(context, listen: false)
-                              .setAuthenticated(false);
-                          // context.goNamed('LoginScreen');
-                          Get.offAllNamed('/Login');
+                          Get.offAllNamed('/login');
                         },
                         child: const Text('Logout'),
                       ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            await removeLocalVariable(LocalKeyCustom.user);
-                            await removeLocalVariable(LocalKeyCustom.token);
-
-                            // if (!context.mounted) return;
-                            // Provider.of<AuthenProvider>(context, listen: false)
-                            //     .setAuthenticated(false);
-                            // context.goNamed('LoginScreen');
-                          },
-                          child: const Text('test base api'))
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     await removeLocalVariable(LocalKeyCustom.user);
+                      //     await removeLocalVariable(LocalKeyCustom.token);
+                      //   },
+                      //   child: const Text('test base api'),
+                      // ),
                     ],
                   ),
                 ],

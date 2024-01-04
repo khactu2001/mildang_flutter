@@ -19,6 +19,7 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
   bool isBookmark = false;
   final ScrollController scrollController = ScrollController();
   late Future<NewsDetail> futureDetail;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -62,8 +63,20 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
                   onProgress: (int progress) {
                     // Update loading bar.
                   },
-                  onPageStarted: (String url) {},
-                  onPageFinished: (String url) {},
+                  onPageStarted: (String url) {
+                    print(url);
+                    // setState(() {
+                    //   _isLoading = true;
+                    // });
+                  },
+                  onPageFinished: (String url) {
+                    print(url);
+                    if (_isLoading) {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
+                  },
                   onWebResourceError: (WebResourceError error) {},
                   onNavigationRequest: (NavigationRequest request) {
                     if (request.url.startsWith('https://www.youtube.com/')) {
@@ -107,7 +120,13 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: WebViewWidget(controller: controller),
+                      child: Stack(children: [
+                        WebViewWidget(controller: controller),
+                        if (_isLoading)
+                          const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                      ]),
                     ),
                   ),
                 ],
@@ -181,36 +200,5 @@ class NewsletterDetailState extends State<NewsletterDetailScreen> {
           }
           return const Center(child: CircularProgressIndicator());
         }));
-  }
-}
-
-class Webview extends StatelessWidget {
-  const Webview({super.key, required this.content});
-
-  final String content;
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadHtmlString('\'\'$content\'\'');
-    return WebViewWidget(controller: controller);
   }
 }

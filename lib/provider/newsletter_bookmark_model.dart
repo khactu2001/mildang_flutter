@@ -33,9 +33,13 @@ class NewsletterBookmarkProvider extends ChangeNotifier {
 
   Future<void> providerGetListBookmarks(Map<String, dynamic> params) async {
     final paging = _dataPagingBookmark.paging;
+    final page = params['page'];
+    print(paging);
     // if the first time -> get the list
-    if (paging == null || paging.page == 1) {
+    if (paging == null || page == 1) {
       final response = await getNewsletterBookmarks(params: params);
+      print(response?.toJson());
+
       if (response != null) {
         _dataPagingBookmark.items = response.items;
         _dataPagingBookmark.paging = response.paging;
@@ -45,7 +49,7 @@ class NewsletterBookmarkProvider extends ChangeNotifier {
       return;
     }
     // if the second time -> compare page with total page
-    if (paging.page! > paging.totalPage!) {
+    if (page! > paging.totalPage!) {
       return;
     }
 

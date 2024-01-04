@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mildang/utils/utilities.dart';
 
 class CommonTextfieldStateful extends StatefulWidget {
   const CommonTextfieldStateful({
@@ -30,23 +31,27 @@ class CommonTextfieldStateful extends StatefulWidget {
 
 class _CommonTextfieldStateful extends State<CommonTextfieldStateful> {
   late FocusNode focusNode;
+  late TextEditingController textEditingController;
 
   @override
   void initState() {
     super.initState();
     focusNode = FocusNode();
+    textEditingController = TextEditingController();
   }
 
   @override
   void dispose() {
     focusNode.dispose();
+    textEditingController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: widget.textEditingController,
+      // controller: widget.textEditingController,
+      controller: textEditingController,
       focusNode: focusNode,
       style: Theme.of(context).textTheme.bodySmall!.copyWith(
             fontSize: widget.style?.fontSize,
@@ -59,6 +64,33 @@ class _CommonTextfieldStateful extends State<CommonTextfieldStateful> {
         hintText: widget.placeholderText,
         counterText: '',
         errorStyle: const TextStyle(fontSize: 14),
+        hintStyle: TextStyle(
+          color: HexColor('#A3A5AE'),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: HexColor('#E1E2E5'),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(
+            color: Colors.red,
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(
+            color: Colors.red,
+          ),
+        ),
       ),
       onTapOutside: (event) {
         focusNode.unfocus();

@@ -425,7 +425,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.pushNamed('SignupScreen');
+                // context.pushNamed('SignupScreen');
+                Get.toNamed('/terms-of-service');
               },
               child: const Text('signup'),
             ),

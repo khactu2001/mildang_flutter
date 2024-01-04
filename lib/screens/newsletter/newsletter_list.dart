@@ -34,6 +34,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
   int total = 0;
   int totalPage = 0;
   final ScrollController _scrollController = ScrollController();
+  String currentSortType = 'DESC';
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class NewsletterListState extends State<NewsletterListScreen> {
     fetchData({
       'page': currentPage,
       'limit': limit,
+      'sort[issueDate]': currentSortType,
     });
     initCategories();
   }
@@ -54,10 +56,20 @@ class NewsletterListState extends State<NewsletterListScreen> {
   void _loadMore() {
     if (currentPage >= totalPage) return;
     currentPage += 1;
-    fetchData({
+    Map<String, dynamic> queryParams = {
       'page': currentPage,
       'limit': limit,
-    });
+    };
+    if (currentSortType == 'DESC' || currentSortType == 'ASC') {
+      queryParams.addAll({
+        'sort[issueDate]': currentSortType,
+      });
+    } else {
+      queryParams.addAll({
+        'sort[likeCount]': 'DESC',
+      });
+    }
+    fetchData(queryParams);
   }
 
   void _onScroll() {
@@ -83,6 +95,11 @@ class NewsletterListState extends State<NewsletterListScreen> {
       });
     }
 
+    // setState(() {
+    // });
+
+    currentSortType = sortType;
+
     fetchData(queryParams);
   }
 
@@ -97,6 +114,23 @@ class NewsletterListState extends State<NewsletterListScreen> {
       }
       newsletterList.addAll(dataPagingList.items ?? []);
     });
+
+    // final ids = [
+    //   13105,
+    //   13106,
+    //   13107,
+    //   13108,
+    //   13109,
+    //   13110,
+    //   13111,
+    //   13112,
+    //   13113,
+    //   13119
+    // ];
+
+    // ids.forEach((element) {
+    //   addNewsBookmarkApi(element);
+    // });
   }
 
   void _openBottomModal() {
@@ -319,60 +353,70 @@ class NewsletterListState extends State<NewsletterListScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                itemCount: newsletterList.length,
-                itemBuilder: (context, index) {
-                  final item = newsletterList[index];
-                  return Container(
-                    key: ValueKey(item.image),
-                    margin: const EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: borderColor),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        print('onTapp-------------');
-                        Get.toNamed('/news-detail/${item.id}');
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (item.image != null)
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8),
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: item.image ?? '',
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(
-                                  strokeWidth: 1,
-                                ),
-                                height: width * 2 / 3,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 16),
-                            child: Text(item.title ?? '',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      fontSize: 24,
-                                    )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  // await Future.delayed(Duration(seconds: 2));
+                  print('ulllllll');
                 },
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  itemCount: newsletterList.length,
+                  itemBuilder: (context, index) {
+                    final item = newsletterList[index];
+                    return Container(
+                      key: ValueKey(item.image),
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: borderColor),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          print('onTapp-------------');
+                          Get.toNamed('/news-detail/${item.id}');
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (item.image != null)
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                ),
+                                child: CachedNetworkImage(
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  imageUrl: item.image ?? '',
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                                  height: width * 2 / 3,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Text(item.title ?? '',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontSize: 24,
+                                      )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],

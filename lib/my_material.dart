@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
-import 'package:flutter_mildang/main.dart';
 import 'package:flutter_mildang/my_scaffold_tabs.dart';
-import 'package:flutter_mildang/screens/detail_screen.dart';
 import 'package:flutter_mildang/screens/error_screen.dart';
-import 'package:flutter_mildang/screens/login-stack/find_account_result_screen.dart';
-import 'package:flutter_mildang/screens/login-stack/find_account_screen.dart';
 import 'package:flutter_mildang/screens/login-stack/login_screen.dart';
 import 'package:flutter_mildang/screens/newsletter/newsletter_bookmark.dart';
 import 'package:flutter_mildang/screens/newsletter/newsletter_detail.dart';
+import 'package:flutter_mildang/screens/signup-stack/signup_screen.dart';
+import 'package:flutter_mildang/screens/signup-stack/term_screen.dart';
 import 'package:flutter_mildang/screens/signup_screen.dart';
 import 'package:flutter_mildang/utils/utilities.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 final theme = ThemeData().copyWith(
   appBarTheme: const AppBarTheme().copyWith(
@@ -86,107 +83,107 @@ final theme = ThemeData().copyWith(
   ),
 );
 
-final GoRouter generalRouter = GoRouter(
-  // navigatorKey: navigatorKey,
-  navigatorKey: Get.key,
-  debugLogDiagnostics: true,
-  redirect: (context, state) {
-    final Controller c = Get.find();
-    // user is in private routes AND token expired
-    // final authenProvider = Provider.of<AuthenProvider>(context, listen: false);
-    // final authenProvider  = AuthenProvider(_isAuthenticated, _token)
-    final matchedLocation = state.matchedLocation;
+// final GoRouter generalRouter = GoRouter(
+//   // navigatorKey: navigatorKey,
+//   navigatorKey: Get.key,
+//   debugLogDiagnostics: true,
+//   redirect: (context, state) {
+//     final Controller c = Get.find();
+//     // user is in private routes AND token expired
+//     // final authenProvider = Provider.of<AuthenProvider>(context, listen: false);
+//     // final authenProvider  = AuthenProvider(_isAuthenticated, _token)
+//     final matchedLocation = state.matchedLocation;
 
-    // not logged in
-    // if (authenProvider.getAuthenticated == false) {
-    if (c.isAuthen.value == false) {
-      // navigate to some public screens
-      if (matchedLocation.startsWith('/public-routes') &&
-          matchedLocation != '/public-routes') {
-        // navigate to that screen
-        return null;
-      }
-      return '/public-routes';
-    }
-    return null;
-  },
-  routes: <RouteBase>[
-    GoRoute(
-      name: 'HomeScreen',
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const MyScaffold();
-      },
-      routes: <RouteBase>[
-        // GoRoute(
-        //   name: 'DetailScreen',
-        //   path: 'detail',
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     print('----${state.extra}----');
-        //     return const DetailScreen();
-        //   },
-        // ),
-        GoRoute(
-          name: 'NewsletterDetailScreen',
-          path: 'news-detail',
-          builder: (BuildContext context, GoRouterState state) {
-            print('----${state.extra}----');
-            // NewsItems newsItems =
-            //     NewsItems.fromJson(jsonDecode(state.extra.toString()));
-            return const NewsletterDetailScreen(
-                // newsItems: newsItems,
-                );
-          },
-        ),
-        GoRoute(
-          name: 'NewsletterBookmarkScreen',
-          path: 'news-bookmark',
-          builder: (BuildContext context, GoRouterState state) {
-            return const NewsletterBookmarkScreen();
-          },
-        ),
-      ],
-      // route
-    ),
-    GoRoute(
-        name: 'LoginScreen',
-        path: '/public-routes',
-        builder: (BuildContext context, GoRouterState state) {
-          return const LoginScreen();
-        },
-        routes: <RouteBase>[
-          GoRoute(
-            name: 'FindAccountScreen',
-            path: 'find-account',
-            builder: (BuildContext context, GoRouterState state) {
-              return const FindAccountScreen();
-            },
-          ),
-          GoRoute(
-            name: 'FindAccountResultScreen',
-            path: 'find-account-result',
-            builder: (BuildContext context, GoRouterState state) {
-              return const FindAccountResultScreen();
-            },
-          ),
-          GoRoute(
-            name: 'SignupScreen',
-            path: 'signup',
-            builder: (BuildContext context, GoRouterState state) {
-              return const SignupScreen();
-            },
-          ),
-        ]),
-    GoRoute(
-      name: 'DetailScreen',
-      path: '/detail',
-      builder: (BuildContext context, GoRouterState state) {
-        print('----${state.extra}----');
-        return const DetailScreen();
-      },
-    ),
-  ],
-);
+//     // not logged in
+//     // if (authenProvider.getAuthenticated == false) {
+//     if (c.isAuthen.value == false) {
+//       // navigate to some public screens
+//       if (matchedLocation.startsWith('/public-routes') &&
+//           matchedLocation != '/public-routes') {
+//         // navigate to that screen
+//         return null;
+//       }
+//       return '/public-routes';
+//     }
+//     return null;
+//   },
+//   routes: <RouteBase>[
+//     GoRoute(
+//       name: 'HomeScreen',
+//       path: '/',
+//       builder: (BuildContext context, GoRouterState state) {
+//         return const MyScaffold();
+//       },
+//       routes: <RouteBase>[
+//         // GoRoute(
+//         //   name: 'DetailScreen',
+//         //   path: 'detail',
+//         //   builder: (BuildContext context, GoRouterState state) {
+//         //     print('----${state.extra}----');
+//         //     return const DetailScreen();
+//         //   },
+//         // ),
+//         GoRoute(
+//           name: 'NewsletterDetailScreen',
+//           path: 'news-detail',
+//           builder: (BuildContext context, GoRouterState state) {
+//             print('----${state.extra}----');
+//             // NewsItems newsItems =
+//             //     NewsItems.fromJson(jsonDecode(state.extra.toString()));
+//             return const NewsletterDetailScreen(
+//                 // newsItems: newsItems,
+//                 );
+//           },
+//         ),
+//         GoRoute(
+//           name: 'NewsletterBookmarkScreen',
+//           path: 'news-bookmark',
+//           builder: (BuildContext context, GoRouterState state) {
+//             return const NewsletterBookmarkScreen();
+//           },
+//         ),
+//       ],
+//       // route
+//     ),
+//     GoRoute(
+//         name: 'LoginScreen',
+//         path: '/public-routes',
+//         builder: (BuildContext context, GoRouterState state) {
+//           return const LoginScreen();
+//         },
+//         routes: <RouteBase>[
+//           GoRoute(
+//             name: 'FindAccountScreen',
+//             path: 'find-account',
+//             builder: (BuildContext context, GoRouterState state) {
+//               return const FindAccountScreen();
+//             },
+//           ),
+//           GoRoute(
+//             name: 'FindAccountResultScreen',
+//             path: 'find-account-result',
+//             builder: (BuildContext context, GoRouterState state) {
+//               return const FindAccountResultScreen();
+//             },
+//           ),
+//           GoRoute(
+//             name: 'SignupScreen',
+//             path: 'signup',
+//             builder: (BuildContext context, GoRouterState state) {
+//               return const SignupScreen();
+//             },
+//           ),
+//         ]),
+//     GoRoute(
+//       name: 'DetailScreen',
+//       path: '/detail',
+//       builder: (BuildContext context, GoRouterState state) {
+//         print('----${state.extra}----');
+//         return const DetailScreen();
+//       },
+//     ),
+//   ],
+// );
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyMaterial extends StatelessWidget {
@@ -204,7 +201,7 @@ class MyMaterial extends StatelessWidget {
     return GetMaterialApp(
       theme: theme,
       unknownRoute: GetPage(name: '/notfound', page: () => const ErrorScreen()),
-      initialRoute: '/',
+      initialRoute: '/signup',
       getPages: [
         GetPage(
           name: '/',
@@ -226,6 +223,14 @@ class MyMaterial extends StatelessWidget {
         GetPage(
           name: '/news-detail/:id',
           page: () => const NewsletterDetailScreen(),
+        ),
+        GetPage(
+          name: '/terms-of-service',
+          page: () => const TermScreen(),
+        ),
+        GetPage(
+          name: '/signup',
+          page: () => const SignupScreen(),
         ),
       ],
     );

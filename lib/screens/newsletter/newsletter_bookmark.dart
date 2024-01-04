@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mildang/configs/theme.config.dart';
+import 'package:flutter_mildang/model/newsletter_bookmark_item_model.dart';
 import 'package:flutter_mildang/provider/newsletter_bookmark_model.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -37,9 +38,9 @@ class NewsletterBookmarkScreen extends StatefulWidget {
 
 class NewsletterListState extends State<NewsletterBookmarkScreen> {
   int currentPage = 1;
-  final int limit = 20;
-  int total = 0;
-  int totalPage = 0;
+  final int limit = 10;
+  // int total = 0;
+  // int totalPage = 0;
 
   @override
   void initState() {
@@ -51,7 +52,24 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
     });
   }
 
+  Future<void> _refreshList() async {
+    currentPage = 1;
+    print(
+        '===================pull =================================================================');
+    await fetchData({
+      'page': currentPage,
+      'limit': limit,
+    });
+  }
+
   void _loadMore() {
+    // print('====$currentPage-$totalPage');
+    final DataPagingBookmark datas =
+        Provider.of<NewsletterBookmarkProvider>(context, listen: false)
+            .dataPagingBookmark;
+    final totalPage = datas.paging?.totalPage ?? 0;
+    print('====$currentPage-$totalPage');
+
     if (currentPage >= totalPage) return;
     currentPage += 1;
     fetchData({
@@ -63,6 +81,7 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
   void _onScroll() {
     final position = _scrollController.position;
     if (position.pixels == position.maxScrollExtent) {
+      print('=========load more================================');
       _loadMore();
     }
   }
@@ -172,6 +191,8 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
         });
   }
 
+  // final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final itemWidth = MediaQuery.of(context).size.width / 2 - 6;
@@ -210,71 +231,76 @@ class NewsletterListState extends State<NewsletterBookmarkScreen> {
             return Column(
               children: [
                 Expanded(
-                  child: GridView.builder(
-                      controller: _scrollController,
-                      addAutomaticKeepAlives: true,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      itemCount: items.isEmpty ? 0 : items.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 12,
-                        childAspectRatio: ratio,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (items.isEmpty) return null;
-                        final item = items[index];
-                        return InkWell(
-                          onTap: () {
-                            Get.toNamed('/news-detail/${item.id}');
-                          },
-                          child: Container(
-                            key: ValueKey(item.image),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: borderColor),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (item.image != null)
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(8),
-                                      topRight: Radius.circular(8),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: item.image ?? '',
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(
-                                        strokeWidth: 1,
+                  child: RefreshIndicator(
+                    onRefresh: _refreshList,
+                    child: GridView.builder(
+                        controller: _scrollController,
+                        addAutomaticKeepAlives: true,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        itemCount: items.isEmpty ? 0 : items.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: ratio,
+                        ),
+                        itemBuilder: (context, index) {
+                          if (items.isEmpty) return null;
+                          final item = items[index];
+                          return InkWell(
+                            onTap: () {
+                              Get.toNamed('/news-detail/${item.id}');
+                            },
+                            child: Container(
+                              key: ValueKey(item.image),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: borderColor),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (item.image != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(8),
+                                        topRight: Radius.circular(8),
                                       ),
-                                      height: itemHeight * 113 / 209,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.image ?? '',
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1,
+                                          ),
+                                        ),
+                                        height: itemHeight * 113 / 209,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 16),
+                                    child: Text('${item.id}${item.title}',
+                                        maxLines: 2,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              fontSize: 20,
+                                              overflow: TextOverflow.ellipsis,
+                                              textBaseline:
+                                                  TextBaseline.alphabetic,
+                                            )),
                                   ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 16),
-                                  child: Text('${item.id}${item.title}',
-                                      maxLines: 2,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            fontSize: 20,
-                                            overflow: TextOverflow.ellipsis,
-                                            textBaseline:
-                                                TextBaseline.alphabetic,
-                                          )),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        }),
+                  ),
                 ),
               ],
             );
