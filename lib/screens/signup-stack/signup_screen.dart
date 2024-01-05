@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mildang/model/login_model.dart';
+import 'package:flutter_mildang/screens/signup-stack/widgets/confirm_password_tf.dart';
 import 'package:flutter_mildang/screens/signup-stack/widgets/custom_form_builder_tf.dart';
+import 'package:flutter_mildang/screens/signup-stack/widgets/email_tf.dart';
+import 'package:flutter_mildang/screens/signup-stack/widgets/nickname_tf.dart';
+import 'package:flutter_mildang/screens/signup-stack/widgets/password_tf.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,12 +27,14 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isLoggedIn = false;
   UserModel? user;
 
-  late FocusNode emailFocusNode;
+  late FocusNode phoneFocusNode;
   late FocusNode pwFocusNode;
   late FocusNode confirmPWFocusNode;
   late FocusNode nicknameFocusNode;
   late FocusNode dobFocusNode;
   late FocusNode genderFocusNode;
+  late FocusNode nickameFocusNode;
+  late FocusNode emailFocusNode;
 
   bool isShowClearTextIcon = false;
 
@@ -37,10 +43,12 @@ class _SignupScreenState extends State<SignupScreen> {
     super.initState();
     pwFocusNode = FocusNode();
     confirmPWFocusNode = FocusNode();
-    emailFocusNode = FocusNode();
+    phoneFocusNode = FocusNode();
     nicknameFocusNode = FocusNode();
     dobFocusNode = FocusNode();
     genderFocusNode = FocusNode();
+    nickameFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
   }
 
   @override
@@ -48,10 +56,12 @@ class _SignupScreenState extends State<SignupScreen> {
     // Clean up the controller when the widget is disposed.
     pwFocusNode.dispose();
     confirmPWFocusNode.dispose();
-    emailFocusNode.dispose();
+    phoneFocusNode.dispose();
     nicknameFocusNode.dispose();
     dobFocusNode.dispose();
     genderFocusNode.dispose();
+    nickameFocusNode.dispose();
+    emailFocusNode.dispose();
     super.dispose();
   }
 
@@ -103,25 +113,29 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  String? confirmPWValidator(value) {
-    if (value != _formKey.currentState!.fields['password']?.value) {
-      return 'Password mismatched';
+  String? phoneValidator(phone) {
+    if (phone.length < 10 || phone.length > 11) {
+      return 'Phone number must contain 10 or 11 digits!';
     }
     return null;
   }
 
+  void onClearPasswordText() {
+    _formKey.currentState!.fields['password']?.reset();
+    print('clearrrrrr----${_formKey.currentState?.fields['password']?.value}');
+  }
+
   String? nicknameValidator(value) {
-    // if (value != _formKey.currentState!.fields['password']?.value) {
-    //   return 'Password mismatched';
-    // }
-    if (value != null) {}
+    if (value != null) {
+      if (value.length > 10) {
+        return 'Limit exceeded';
+      }
+    }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    // print('isLoggedIn: $isLoggedIn');
-    // print('user: ${user?.email}');
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double widthRatioActualWithDesign = MediaQuery.of(context).size.width / 352;
     Widget signupScreen = GestureDetector(
@@ -136,7 +150,7 @@ class _SignupScreenState extends State<SignupScreen> {
               defaultPadding,
               defaultPadding + statusBarHeight,
               defaultPadding,
-              defaultPadding,
+              defaultPadding + 56 + 16 * 2,
             ),
             child: FormBuilder(
               key: _formKey,
@@ -165,19 +179,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 8,
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: CustomFormBuilderTF(
-                              name: 'email',
-                              focusNode: emailFocusNode,
+                              name: 'phone',
+                              keyboardType: TextInputType.phone,
+                              focusNode: phoneFocusNode,
                               validator: FormBuilderValidators.compose([
                                 FormBuilderValidators.required(
-                                    errorText: 'Email is required'),
-                                FormBuilderValidators.email(
-                                    errorText: 'Please enter a valid email!'),
+                                    errorText: 'Phone number is required'),
+                                phoneValidator,
                               ]),
                               decoration: const InputDecoration(
-                                  hintText: '휴대폰 번호로 입력해주세요.'),
+                                hintText: '휴대폰 번호로 입력해주세요.',
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -185,22 +201,22 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
-                              Future<bool> checkApi(String email) async {
+                              Future<bool> checkApi(String phone) async {
                                 return await Future.delayed(
                                     const Duration(seconds: 2), () {
                                   print('success');
-                                  return email.length % 2 == 0;
+                                  return phone.length % 2 == 0;
                                 });
                               }
 
-                              final email =
-                                  _formKey.currentState!.fields['email']?.value;
-                              if (email == null) return;
-                              final isExist = await checkApi(email);
+                              final phone =
+                                  _formKey.currentState!.fields['phone']?.value;
+                              if (phone == null) return;
+                              final isExist = await checkApi(phone);
                               print('result $isExist');
                               if (isExist) {
-                                _formKey.currentState?.fields['email']!
-                                    .invalidate('Email is existed');
+                                _formKey.currentState?.fields['phone']!
+                                    .invalidate('phone is existed');
                               }
                             },
                             child: const Text('check'),
@@ -219,19 +235,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(
                         height: 8,
                       ),
-                      CustomFormBuilderTF(
+                      PasswordTextField(
                         name: 'password',
                         focusNode: pwFocusNode,
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                              errorText: 'Password is required'),
-                          FormBuilderValidators.minLength(8,
-                              errorText:
-                                  'Password must be at least 8 characters!'),
-                        ]),
-                        decoration: const InputDecoration(
-                          hintText: '휴대폰 번호로 입력해주세요.',
-                        ),
                       ),
                     ],
                   ),
@@ -245,15 +251,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(
                         height: 8,
                       ),
-                      CustomFormBuilderTF(
+                      ConfirmPasswordTextField(
                         name: 'confirmation',
                         focusNode: confirmPWFocusNode,
-                        validator: confirmPWValidator,
-                        decoration: const InputDecoration(
-                          hintText: '비밀번호를 다시 한 번 입력해 주세요.',
-                          hintStyle: TextStyle(
-                              backgroundColor: Colors.red, color: Colors.amber),
-                        ),
+                        validator: nicknameValidator,
                       ),
                     ],
                   ),
@@ -325,9 +326,39 @@ class _SignupScreenState extends State<SignupScreen> {
                       )
                     ],
                   ),
-                  // const SizedBox(
-                  //   height: 32,
-                  // ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      renderLabelTF('닉네임'),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      NicknameField(
+                        name: 'nickname',
+                        focusNode: nickameFocusNode,
+                        // validator: nicknameValidator,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      renderLabelTF('이메일', isRequired: false),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      EmailField(
+                        name: 'email',
+                        focusNode: emailFocusNode,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -338,24 +369,42 @@ class _SignupScreenState extends State<SignupScreen> {
     double width = MediaQuery.of(context).size.width;
 
     bool checkDisabledSubmitButton() {
-      // if (_formKey.currentState?) {
-      //   return false;
-      // }
-      // return true;
+      String? phone = _formKey.currentState?.fields['phone']?.value;
+      String? password = _formKey.currentState?.fields['password']?.value;
+      String? confirmation =
+          _formKey.currentState?.fields['confirmation']?.value;
+      String? dob = _formKey.currentState?.fields['dob']?.value;
+      String? gender = _formKey.currentState?.fields['gender']?.value;
+      if ([phone, password, confirmation, dob, gender]
+          .any((element) => element == null || element.isEmpty)) {
+        return true;
+      }
+
       return false;
     }
 
+    // final currentState = _formKey.currentState;
+
     return Scaffold(
       body: signupScreen,
-      floatingActionButton: emailFocusNode.hasFocus ||
-              pwFocusNode.hasFocus ||
-              confirmPWFocusNode.hasFocus ||
-              dobFocusNode.hasFocus ||
-              genderFocusNode.hasFocus
+      // floatingActionButton: phoneFocusNode.hasFocus ||
+      //         pwFocusNode.hasFocus ||
+      //         confirmPWFocusNode.hasFocus ||
+      //         dobFocusNode.hasFocus ||
+      //         genderFocusNode.hasFocus ||
+      //         nickameFocusNode.hasFocus ||
+      floatingActionButton: [
+        phoneFocusNode,
+        pwFocusNode,
+        confirmPWFocusNode,
+        dobFocusNode,
+        genderFocusNode,
+        nickameFocusNode,
+        emailFocusNode,
+      ].any((e) => e.hasFocus)
           ? null
           : ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  // disabledBackgroundColor: ,
                   maximumSize: Size.fromWidth(width - defaultPadding * 2 + 8)),
               onPressed: checkDisabledSubmitButton()
                   ? null

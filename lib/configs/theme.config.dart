@@ -24,6 +24,11 @@ Color borderColor = HexColor('#A3A5AE');
 Color itemSelectedColor = HexColor('#F0F7F9');
 Color categoryUnselectedColor = HexColor('#F5F6F7');
 Color categoryUnselectedBorderColor = HexColor('#E1E2E5');
+TextStyle successTextField = TextStyle(
+  color: HexColor('#0E9154'),
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
 
 TextTheme textTheme = ThemeData().textTheme.copyWith(
       titleLarge: TextStyle(
